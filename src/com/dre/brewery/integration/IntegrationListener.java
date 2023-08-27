@@ -6,16 +6,10 @@ import com.dre.brewery.api.events.barrel.BarrelAccessEvent;
 import com.dre.brewery.api.events.barrel.BarrelDestroyEvent;
 import com.dre.brewery.api.events.barrel.BarrelRemoveEvent;
 import com.dre.brewery.filedata.BConfig;
-import com.dre.brewery.integration.barrel.BlocklockerBarrel;
-import com.dre.brewery.integration.barrel.GriefPreventionBarrel;
 import com.dre.brewery.integration.barrel.LWCBarrel;
-import com.dre.brewery.integration.barrel.LogBlockBarrel;
-import com.dre.brewery.integration.barrel.TownyBarrel;
-import com.dre.brewery.integration.item.MMOItemsPluginItem;
 import com.dre.brewery.recipe.BCauldronRecipe;
 import com.dre.brewery.recipe.RecipeItem;
 import com.dre.brewery.utility.LegacyUtil;
-import io.lumine.mythic.lib.api.item.NBTItem;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -63,58 +57,6 @@ public class IntegrationListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBarrelAccess(BarrelAccessEvent event) {
-		if (BConfig.useGMInventories) {
-			Plugin pl = P.p.getServer().getPluginManager().getPlugin("GameModeInventories");
-			if (pl != null && pl.isEnabled()) {
-				try {
-					if (pl.getConfig().getBoolean("restrict_creative")) {
-						Player player = event.getPlayer();
-						if (player.getGameMode() == GameMode.CREATIVE) {
-							if (!pl.getConfig().getBoolean("bypass.inventories") || (!player.hasPermission("gamemodeinventories.bypass") && !player.isOp())) {
-								event.setCancelled(true);
-								if (!pl.getConfig().getBoolean("dont_spam_chat")) {
-									P.p.msg(event.getPlayer(), P.p.languageReader.get("Error_NoBarrelAccess"));
-								}
-								return;
-							}
-						}
-					}
-				} catch (Throwable e) {
-					P.p.errorLog("Failed to Check GameModeInventories for Barrel Open Permissions!");
-					P.p.errorLog("Players will be able to open Barrel with GameMode Creative");
-					e.printStackTrace();
-					BConfig.useGMInventories = false;
-				}
-			} else {
-				BConfig.useGMInventories = false;
-			}
-		}
-		if (BConfig.useGP) {
-			if (P.p.getServer().getPluginManager().isPluginEnabled("GriefPrevention")) {
-				try {
-					if (!GriefPreventionBarrel.checkAccess(event)) {
-						P.p.msg(event.getPlayer(), P.p.languageReader.get("Error_NoBarrelAccess"));
-						event.setCancelled(true);
-						return;
-					}
-				} catch (Throwable e) {
-					event.setCancelled(true);
-					P.p.errorLog("Failed to Check GriefPrevention for Barrel Open Permissions!");
-					P.p.errorLog("Brewery was tested with GriefPrevention v14.5 - v16.9");
-					P.p.errorLog("Disable the GriefPrevention support in the config and do /brew reload");
-					e.printStackTrace();
-					Player player = event.getPlayer();
-					if (player.hasPermission("brewery.admin") || player.hasPermission("brewery.mod")) {
-						P.p.msg(player, "&cGriefPrevention check Error, Brewery was tested with up to v16.9 of GriefPrevention");
-						P.p.msg(player, "&cSet &7useGriefPrevention: false &cin the config and /brew reload");
-					} else {
-						P.p.msg(player, "&cError opening Barrel, please report to an Admin!");
-					}
-					return;
-				}
-			}
-		}
-
 		if (BConfig.useLWC) {
 			Plugin plugin = P.p.getServer().getPluginManager().getPlugin("LWC");
 			if (plugin != null) {
@@ -146,58 +88,6 @@ public class IntegrationListener implements Listener {
 							return;
 						}
 					}
-				}
-			}
-		}
-
-		if (BConfig.useTowny) {
-			if (P.p.getServer().getPluginManager().isPluginEnabled("Towny")) {
-				try {
-					if (!TownyBarrel.checkAccess(event)) {
-						P.p.msg(event.getPlayer(), P.p.languageReader.get("Error_NoBarrelAccess"));
-						event.setCancelled(true);
-						return;
-					}
-				} catch (Throwable e) {
-					event.setCancelled(true);
-					P.p.errorLog("Failed to Check Towny for Barrel Open Permissions!");
-					P.p.errorLog("Brewery was tested with Towny v0.96.3.0");
-					P.p.errorLog("Disable the Towny support in the config and do /brew reload");
-					e.printStackTrace();
-					Player player = event.getPlayer();
-					if (player.hasPermission("brewery.admin") || player.hasPermission("brewery.mod")) {
-						P.p.msg(player, "&cTowny check Error, Brewery was tested with up to v0.96.3.0 of Towny");
-						P.p.msg(player, "&cSet &7useTowny: false &cin the config and /brew reload");
-					} else {
-						P.p.msg(player, "&cError opening Barrel, please report to an Admin!");
-					}
-					return;
-				}
-			}
-		}
-
-		if (BConfig.useBlocklocker) {
-			if (P.p.getServer().getPluginManager().isPluginEnabled("BlockLocker")) {
-				try {
-					if (!BlocklockerBarrel.checkAccess(event)) {
-						P.p.msg(event.getPlayer(), P.p.languageReader.get("Error_NoBarrelAccess"));
-						event.setCancelled(true);
-						return;
-					}
-				} catch (Throwable e) {
-					event.setCancelled(true);
-					P.p.errorLog("Failed to Check BlockLocker for Barrel Open Permissions!");
-					P.p.errorLog("Brewery was tested with BlockLocker v1.9");
-					P.p.errorLog("Disable the BlockLocker support in the config and do /brew reload");
-					e.printStackTrace();
-					Player player = event.getPlayer();
-					if (player.hasPermission("brewery.admin") || player.hasPermission("brewery.mod")) {
-						P.p.msg(player, "&cBlockLocker check Error, Brewery was tested with v1.9 of BlockLocker");
-						P.p.msg(player, "&cSet &7useBlockLocker: false &cin the config and /brew reload");
-					} else {
-						P.p.msg(player, "&cError opening Barrel, please report to an Admin!");
-					}
-					return;
 				}
 			}
 		}
@@ -295,55 +185,6 @@ public class IntegrationListener implements Listener {
 			P.p.errorLog("Failed to Remove LWC Lock from Barrel!");
 			P.p.errorLog("Brewery was tested with version 4.5.0 of LWC!");
 			e.printStackTrace();
-		}
-	}
-
-	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent event) {
-		if (BConfig.useLB) {
-			if (event.getInventory().getHolder() instanceof Barrel) {
-				try {
-					LogBlockBarrel.closeBarrel(event.getPlayer(), event.getInventory());
-				} catch (Exception e) {
-					P.p.errorLog("Failed to Log Barrel to LogBlock!");
-					P.p.errorLog("Brewery was tested with version 1.94 of LogBlock!");
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onInteract(PlayerInteractEvent event) {
-		// Catch the Interact Event early, so MMOItems does not act before us and cancel the event while we try to add it to the Cauldron
-		if (!P.use1_9) return;
-		if (BConfig.hasMMOItems == null) {
-			BConfig.hasMMOItems = P.p.getServer().getPluginManager().isPluginEnabled("MMOItems")
-				&& P.p.getServer().getPluginManager().isPluginEnabled("MythicLib");
-		}
-		if (!BConfig.hasMMOItems) return;
-		try {
-			if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.hasItem() && event.getHand() == EquipmentSlot.HAND) {
-				if (event.getClickedBlock() != null && LegacyUtil.isWaterCauldron(event.getClickedBlock().getType())) {
-					NBTItem item = NBTItem.get(event.getItem());
-					if (item.hasType()) {
-						for (RecipeItem rItem : BCauldronRecipe.acceptedCustom) {
-							if (rItem instanceof MMOItemsPluginItem) {
-								MMOItemsPluginItem mmo = ((MMOItemsPluginItem) rItem);
-								if (mmo.matches(event.getItem())) {
-									event.setCancelled(true);
-									P.p.playerListener.onPlayerInteract(event);
-									return;
-								}
-							}
-						}
-					}
-				}
-			}
-		} catch (Throwable e) {
-			P.p.errorLog("Could not check MMOItems for Item");
-			e.printStackTrace();
-			BConfig.hasMMOItems = false;
 		}
 	}
 }

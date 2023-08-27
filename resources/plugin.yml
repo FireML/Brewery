@@ -1,9 +1,9 @@
 name: Brewery
-version: 3.1.1
+version: ${project.version}
 main: com.dre.brewery.P
-softdepend: [LWC, LogBlock, WorldGuard, GriefPrevention, Vault, ChestShop, Shopkeepers, Towny, BlockLocker, Slimefun]
-authors: [Milan Albrecht, Frank Baumann, ProgrammerDan, Daniel Saukel]
-api-version: 1.13
+softdepend: [WorldEdit, WorldGuard, Vault, ChestShop]
+authors: [Milan Albrecht, Frank Baumann, ProgrammerDan, Daniel Saukel, FireML]
+api-version: '1.20'
 commands:
   brewery:
     description: Mostly admin commands to create/modify Brews and drunkeness

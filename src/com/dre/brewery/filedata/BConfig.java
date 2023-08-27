@@ -6,14 +6,9 @@ import com.dre.brewery.DistortChat;
 import com.dre.brewery.MCBarrel;
 import com.dre.brewery.P;
 import com.dre.brewery.api.events.ConfigLoadEvent;
-import com.dre.brewery.integration.barrel.BlocklockerBarrel;
 import com.dre.brewery.integration.barrel.WGBarrel;
-import com.dre.brewery.integration.barrel.WGBarrel5;
-import com.dre.brewery.integration.barrel.WGBarrel6;
 import com.dre.brewery.integration.barrel.WGBarrel7;
 import com.dre.brewery.integration.item.BreweryPluginItem;
-import com.dre.brewery.integration.item.MMOItemsPluginItem;
-import com.dre.brewery.integration.item.SlimefunPluginItem;
 import com.dre.brewery.recipe.BCauldronRecipe;
 import com.dre.brewery.recipe.BRecipe;
 import com.dre.brewery.recipe.PluginItem;
@@ -48,17 +43,9 @@ public class BConfig {
 	public static boolean useWG; //WorldGuard
 	public static WGBarrel wg;
 	public static boolean useLWC; //LWC
-	public static boolean useLB; //LogBlock
-	public static boolean useGP; //GriefPrevention
 	public static boolean useTowny; //Towny
-	public static boolean useBlocklocker; //LockBlocker
 	public static boolean hasVault; // Vault
-	public static boolean useCitadel; // CivCraft/DevotedMC Citadel
-	public static boolean useGMInventories; // GamemodeInventories
-	public static boolean hasSlimefun; // Slimefun
-	public static Boolean hasMMOItems = null; // MMOItems ; Null if not checked
 	public static boolean hasChestShop;
-	public static boolean hasShopKeepers;
 
 	// Barrel
 	public static boolean openEverywhere;
@@ -204,19 +191,11 @@ public class BConfig {
 		// Third-Party
 		useWG = config.getBoolean("useWorldGuard", true) && plMan.isPluginEnabled("WorldGuard");
 		useLWC = config.getBoolean("useLWC", true) && plMan.isPluginEnabled("LWC");
-		useTowny = config.getBoolean("useTowny", true) && plMan.isPluginEnabled("Towny");
-		useGP = config.getBoolean("useGriefPrevention", true) && plMan.isPluginEnabled("GriefPrevention");
-		useLB = config.getBoolean("useLogBlock", false) && plMan.isPluginEnabled("LogBlock");
-		useGMInventories = config.getBoolean("useGMInventories", false);
-		useCitadel = config.getBoolean("useCitadel", false) && plMan.isPluginEnabled("Citadel");
-		useBlocklocker = config.getBoolean("useBlockLocker", false) && plMan.isPluginEnabled("BlockLocker");
 		virtualChestPerms = config.getBoolean("useVirtualChestPerms", false);
 		// The item util has been removed in Vault 1.7+
 		hasVault = plMan.isPluginEnabled("Vault")
 			&& Integer.parseInt(plMan.getPlugin("Vault").getDescription().getVersion().split("\\.")[1]) <= 6;
 		hasChestShop = plMan.isPluginEnabled("ChestShop");
-		hasShopKeepers = plMan.isPluginEnabled("Shopkeepers");
-		hasSlimefun = plMan.isPluginEnabled("Slimefun");
 
 		// various Settings
 		DataSave.autosave = config.getInt("autosave", 3);
@@ -259,9 +238,6 @@ public class BConfig {
 		}
 
 		PluginItem.registerForConfig("brewery", BreweryPluginItem::new);
-		PluginItem.registerForConfig("mmoitems", MMOItemsPluginItem::new);
-		PluginItem.registerForConfig("slimefun", SlimefunPluginItem::new);
-		PluginItem.registerForConfig("exoticgarden", SlimefunPluginItem::new);
 
 		// Loading custom items
 		ConfigurationSection configSection = config.getConfigurationSection("customItems");
@@ -323,17 +299,6 @@ public class BConfig {
 				if (drainSplit.length > 1) {
 					Material mat = Material.matchMaterial(drainSplit[0]);
 					int strength = p.parseInt(drainSplit[1]);
-					if (mat == null && hasVault && strength > 0) {
-						try {
-							net.milkbowl.vault.item.ItemInfo vaultItem = net.milkbowl.vault.item.Items.itemByString(drainSplit[0]);
-							if (vaultItem != null) {
-								mat = vaultItem.getType();
-							}
-						} catch (Exception e) {
-							P.p.errorLog("Could not check vault for Item Name");
-							e.printStackTrace();
-						}
-					}
 					if (mat != null && strength > 0) {
 						drainItems.put(mat, strength);
 					}
@@ -368,29 +333,12 @@ public class BConfig {
 		if (useWG) {
 			Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldEdit");
 			if (plugin != null) {
-				String wgv = plugin.getDescription().getVersion();
-				if (wgv.startsWith("6.")) {
-					wg = new WGBarrel6();
-				} else if (wgv.startsWith("5.")) {
-					wg = new WGBarrel5();
-				} else {
-					wg = new WGBarrel7();
-				}
+				wg = new WGBarrel7();
 			}
 			if (wg == null) {
 				P.p.errorLog("Failed loading WorldGuard Integration! Opening Barrels will NOT work!");
 				P.p.errorLog("Brewery was tested with version 5.8, 6.1 and 7.0 of WorldGuard!");
 				P.p.errorLog("Disable the WorldGuard support in the config and do /brew reload");
-			}
-		}
-		if (useBlocklocker) {
-			try {
-				Class.forName("nl.rutgerkok.blocklocker.BlockLockerAPIv2");
-				Class.forName("nl.rutgerkok.blocklocker.ProtectableBlocksSettings");
-				BlocklockerBarrel.registerBarrelAsProtectable();
-			} catch (ClassNotFoundException e) {
-				useBlocklocker = false;
-				P.p.log("Unsupported Version of 'BlockLocker', locking Brewery Barrels disabled");
 			}
 		}
 

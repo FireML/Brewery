@@ -8,7 +8,6 @@ import com.dre.brewery.P;
 import com.dre.brewery.api.events.barrel.BarrelDestroyEvent;
 import com.dre.brewery.filedata.BConfig;
 import com.dre.brewery.filedata.BData;
-import com.dre.brewery.integration.barrel.BlocklockerBarrel;
 import com.dre.brewery.utility.BUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -54,12 +53,6 @@ public class BlockListener implements Listener {
 		if (DistortChat.doSigns) {
 			if (BPlayer.hasPlayer(event.getPlayer())) {
 				DistortChat.signWrite(event);
-			}
-		}
-		if (BConfig.useBlocklocker) {
-			String[] lines = event.getLines();
-			if (hasBarrelLine(lines)) {
-				BlocklockerBarrel.createdBarrelSign(event.getBlock());
 			}
 		}
 	}

@@ -31,10 +31,6 @@ import com.dre.brewery.filedata.LanguageReader;
 import com.dre.brewery.filedata.UpdateChecker;
 import com.dre.brewery.integration.ChestShopListener;
 import com.dre.brewery.integration.IntegrationListener;
-import com.dre.brewery.integration.ShopKeepersListener;
-import com.dre.brewery.integration.SlimefunListener;
-import com.dre.brewery.integration.barrel.BlocklockerBarrel;
-import com.dre.brewery.integration.barrel.LogBlockBarrel;
 import com.dre.brewery.listeners.*;
 import com.dre.brewery.recipe.*;
 import com.dre.brewery.utility.BUtil;
@@ -159,12 +155,6 @@ public class P extends JavaPlugin {
 		if (BConfig.hasChestShop && use1_13) {
 			p.getServer().getPluginManager().registerEvents(new ChestShopListener(), p);
 		}
-		if (BConfig.hasShopKeepers) {
-			p.getServer().getPluginManager().registerEvents(new ShopKeepersListener(), p);
-		}
-		if (BConfig.hasSlimefun && use1_14) {
-			p.getServer().getPluginManager().registerEvents(new SlimefunListener(), p);
-		}
 
 		// Heartbeat
 		p.getServer().getScheduler().runTaskTimer(p, new BreweryRunnable(), 650, 1200);
@@ -271,16 +261,8 @@ public class P extends JavaPlugin {
 		BCauldronRecipe.getConfigRecipes().clear();
 		BCauldronRecipe.numConfigRecipes = 0;
 		BConfig.customItems.clear();
-		BConfig.hasMMOItems = null;
 		DistortChat.commands = null;
 		BConfig.drainItems.clear();
-		if (BConfig.useLB) {
-			try {
-				LogBlockBarrel.clear();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	/**
@@ -398,7 +380,6 @@ public class P extends JavaPlugin {
 			Barrel.onUpdate();// runs every min to check and update ageing time
 			long t3 = System.nanoTime();
 			if (use1_14) MCBarrel.onUpdate();
-			if (BConfig.useBlocklocker) BlocklockerBarrel.clearBarrelSign();
 			long t4 = System.nanoTime();
 			BPlayer.onUpdate();// updates players drunkeness
 

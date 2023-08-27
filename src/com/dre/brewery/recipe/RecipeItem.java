@@ -258,17 +258,6 @@ public abstract class RecipeItem implements Cloneable {
 				continue;
 			}
 
-			if (mat == null && BConfig.hasVault) {
-				try {
-					net.milkbowl.vault.item.ItemInfo vaultItem = net.milkbowl.vault.item.Items.itemByString(ingredParts[0]);
-					if (vaultItem != null) {
-						mat = vaultItem.getType();
-					}
-				} catch (Exception e) {
-					P.p.errorLog("Could not check vault for Item Name");
-					e.printStackTrace();
-				}
-			}
 			if (mat != null) {
 				materials.add(mat);
 			} else {

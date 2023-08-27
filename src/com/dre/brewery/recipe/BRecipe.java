@@ -254,25 +254,6 @@ public class BRecipe {
 			if (matParts.length == 2) {
 				durability = (short) P.p.parseInt(matParts[1]);
 			}
-			if (mat == null && BConfig.hasVault) {
-				try {
-					net.milkbowl.vault.item.ItemInfo vaultItem = net.milkbowl.vault.item.Items.itemByString(matParts[0]);
-					if (vaultItem != null) {
-						mat = vaultItem.getType();
-						if (durability == -1 && vaultItem.getSubTypeId() != 0) {
-							durability = vaultItem.getSubTypeId();
-						}
-						if (mat.name().contains("LEAVES")) {
-							if (durability > 3) {
-								durability -= 4; // Vault has leaves with higher durability
-							}
-						}
-					}
-				} catch (Exception e) {
-					P.p.errorLog("Could not check vault for Item Name");
-					e.printStackTrace();
-				}
-			}
 			if (mat != null) {
 				RecipeItem rItem;
 				if (durability > -1) {

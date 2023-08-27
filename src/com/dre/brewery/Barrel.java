@@ -5,7 +5,6 @@ import com.dre.brewery.api.events.barrel.BarrelCreateEvent;
 import com.dre.brewery.api.events.barrel.BarrelDestroyEvent;
 import com.dre.brewery.api.events.barrel.BarrelRemoveEvent;
 import com.dre.brewery.filedata.BConfig;
-import com.dre.brewery.integration.barrel.LogBlockBarrel;
 import com.dre.brewery.lore.BrewLore;
 import com.dre.brewery.utility.BUtil;
 import com.dre.brewery.utility.BoundingBox;
@@ -177,15 +176,6 @@ public class Barrel implements InventoryHolder {
 		// reset barreltime, potions have new age
 		time = 0;
 
-		if (BConfig.useLB) {
-			try {
-				LogBlockBarrel.openBarrel(player, inventory, spigot.getLocation());
-			} catch (Throwable e) {
-				P.p.errorLog("Failed to Log Barrel to LogBlock!");
-				P.p.errorLog("Brewery was tested with version 1.94 of LogBlock!");
-				e.printStackTrace();
-			}
-		}
 		player.openInventory(inventory);
 	}
 
@@ -392,15 +382,6 @@ public class Barrel implements InventoryHolder {
 			}
 			ItemStack[] items = inventory.getContents();
 			inventory.clear();
-			if (BConfig.useLB && breaker != null) {
-				try {
-					LogBlockBarrel.breakBarrel(breaker, items, spigot.getLocation());
-				} catch (Throwable e) {
-					P.p.errorLog("Failed to Log Barrel-break to LogBlock!");
-					P.p.errorLog("Brewery was tested with version 1.94 of LogBlock!");
-					e.printStackTrace();
-				}
-			}
 			if (event.willDropItems()) {
 				byte wood = body.getWood();
 				for (ItemStack item : items) {
