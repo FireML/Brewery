@@ -2,7 +2,7 @@ package com.dre.brewery.utility;
 
 import com.dre.brewery.BCauldron;
 import com.dre.brewery.Barrel;
-import com.dre.brewery.P;
+import com.dre.brewery.Brewery;
 import com.dre.brewery.api.events.barrel.BarrelDestroyEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -90,7 +90,7 @@ public class BUtil {
 	 */
 	@SuppressWarnings("deprecation")
 	public static void setItemInHand(PlayerInteractEvent event, Material mat, boolean swapped) {
-		if (P.use1_9) {
+		if (Brewery.getInstance().use1_9) {
 			if ((event.getHand() == EquipmentSlot.OFF_HAND) != swapped) {
 				event.getPlayer().getInventory().setItemInOffHand(new ItemStack(mat));
 			} else {
@@ -105,7 +105,7 @@ public class BUtil {
 	 * Returns either uuid or Name of player, depending on bukkit version
 	 */
 	public static String playerString(Player player) {
-		if (P.useUUID) {
+		if (Brewery.getInstance().useUUID) {
 			return player.getUniqueId().toString();
 		} else {
 			return player.getName();
@@ -116,7 +116,7 @@ public class BUtil {
 	 * returns the Player if online
 	 */
 	public static Player getPlayerfromString(String name) {
-		if (P.useUUID) {
+		if (Brewery.getInstance().useUUID) {
 			try {
 				return Bukkit.getPlayer(UUID.fromString(name));
 			} catch (Exception e) {
@@ -135,7 +135,7 @@ public class BUtil {
 		final PotionEffectType type = effect.getType();
 		if (player.hasPotionEffect(type)) {
 			PotionEffect plEffect;
-			if (P.use1_11) {
+			if (Brewery.getInstance().use1_11) {
 				plEffect = player.getPotionEffect(type);
 			} else {
 				plEffect = player.getActivePotionEffects().stream().filter(e -> e.getType().equals(type)).findAny().get();
@@ -239,7 +239,7 @@ public class BUtil {
 	 * create empty World save Sections
 	 */
 	public static void createWorldSections(ConfigurationSection section) {
-		for (World world : P.p.getServer().getWorlds()) {
+		for (World world : Brewery.getInstance().getServer().getWorlds()) {
 			String worldName = world.getName();
 			if (worldName.startsWith("DXL_")) {
 				worldName = getDxlName(worldName);
@@ -326,7 +326,7 @@ public class BUtil {
 			page = 1;
 		}
 
-		sender.sendMessage(color("&7-------------- &f" + P.p.languageReader.get("Etc_Page") + " &6" + page + "&f/&6" + pages + " &7--------------"));
+		sender.sendMessage(color("&7-------------- &f" + Brewery.getInstance().languageReader.get("Etc_Page") + " &6" + page + "&f/&6" + pages + " &7--------------"));
 
 		ListIterator<String> iter = strings.listIterator((page - 1) * 7);
 

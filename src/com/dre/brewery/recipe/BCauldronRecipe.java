@@ -1,6 +1,6 @@
 package com.dre.brewery.recipe;
 
-import com.dre.brewery.P;
+import com.dre.brewery.Brewery;
 import com.dre.brewery.utility.StringParser;
 import com.dre.brewery.utility.Tuple;
 import org.bukkit.Color;
@@ -48,9 +48,9 @@ public class BCauldronRecipe {
 
 		String name = cfg.getString(id + ".name");
 		if (name != null) {
-			name = P.p.color(name);
+			name = Brewery.getInstance().color(name);
 		} else {
-			P.p.errorLog("Missing name for Cauldron-Recipe: " + id);
+			Brewery.getInstance().errorLog("Missing name for Cauldron-Recipe: " + id);
 			return null;
 		}
 
@@ -58,7 +58,7 @@ public class BCauldronRecipe {
 
 		recipe.ingredients = BRecipe.loadIngredients(cfg, id);
 		if (recipe.ingredients == null || recipe.ingredients.isEmpty()) {
-			P.p.errorLog("No ingredients for Cauldron-Recipe: " + recipe.name);
+			Brewery.getInstance().errorLog("No ingredients for Cauldron-Recipe: " + recipe.name);
 			return null;
 		}
 
@@ -71,7 +71,7 @@ public class BCauldronRecipe {
 		if (recipe.color == PotionColor.WATER && !col.equals("WATER")) {
 			recipe.color = PotionColor.CYAN;
 			// Don't throw error here as old mc versions will not know even the default colors
-			//P.p.errorLog("Invalid Color '" + col + "' in Cauldron-Recipe: " + recipe.name);
+			//Brewery.getInstance().errorLog("Invalid Color '" + col + "' in Cauldron-Recipe: " + recipe.name);
 			//return null;
 		}
 
@@ -81,18 +81,18 @@ public class BCauldronRecipe {
 			if (split.length == 1) {
 				minute = 10;
 			} else if (split.length == 2) {
-				minute = P.p.parseInt(split[1]);
+				minute = Brewery.getInstance().parseInt(split[1]);
 			} else {
-				P.p.errorLog("cookParticle: '" + entry + "' in: " + recipe.name);
+				Brewery.getInstance().errorLog("cookParticle: '" + entry + "' in: " + recipe.name);
 				return null;
 			}
 			if (minute < 1) {
-				P.p.errorLog("cookParticle: '" + entry + "' in: " + recipe.name);
+				Brewery.getInstance().errorLog("cookParticle: '" + entry + "' in: " + recipe.name);
 				return null;
 			}
 			PotionColor partCol = PotionColor.fromString(split[0]);
 			if (partCol == PotionColor.WATER && !split[0].equals("WATER")) {
-				P.p.errorLog("Color of cookParticle: '" + entry + "' in: " + recipe.name);
+				Brewery.getInstance().errorLog("Color of cookParticle: '" + entry + "' in: " + recipe.name);
 				return null;
 			}
 			recipe.particleColor.add(new Tuple<>(minute, partCol.getColor()));
@@ -224,7 +224,7 @@ public class BCauldronRecipe {
 			double mod = Math.pow(0.1, tooMuch);
 			match *= mod;
 		}
-		P.p.debugLog("Match for Cauldron Recipe " + name + ": " + match);
+		Brewery.getInstance().debugLog("Match for Cauldron Recipe " + name + ": " + match);
 		return match;
 	}
 

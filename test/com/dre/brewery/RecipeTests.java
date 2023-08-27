@@ -41,7 +41,7 @@ public class RecipeTests {
 			for (BCauldronRecipe r : BCauldronRecipe.recipes) {
 				match = r.getIngredientMatch(list);
 				if (match >= 10) {
-					P.p.debugLog("Found match 10 Recipe: " + r);
+					Brewery.getInstance().debugLog("Found match 10 Recipe: " + r);
 					return;
 				}
 				if (match > bestMatch) {
@@ -49,7 +49,7 @@ public class RecipeTests {
 					bestMatch = match;
 				}
 			}
-			P.p.debugLog("Found best for i:" + i + " " + best);
+			Brewery.getInstance().debugLog("Found best for i:" + i + " " + best);
 		}
 
 		item = new ItemStack(Material.BARRIER);
@@ -76,11 +76,11 @@ public class RecipeTests {
 			.get();
 		BreweryApi.addRecipe(recipe, false);
 
-		P.p.log(BRecipe.getConfigRecipes().size() + "");
+		Brewery.getInstance().log(BRecipe.getConfigRecipes().size() + "");
 
 		BreweryApi.removeRecipe("Bier");
 
-		P.p.log(BRecipe.getConfigRecipes().size() + "");
+		Brewery.getInstance().log(BRecipe.getConfigRecipes().size() + "");
 
 		BCauldronRecipe r = BreweryApi.cauldronRecipeBuilder("Cooler Trank")
 			.color(PotionColor.PINK)
@@ -101,20 +101,20 @@ public class RecipeTests {
 				if (in.readUTF().equals("TESTHalloª∆Ω") && in.readInt() == 34834 && in.skip(4) > 0 && in.readLong() == Long.MAX_VALUE) {
 					in.reset();
 					if (in.readUTF().equals("TESTHalloª∆Ω")) {
-						P.p.log("true");
+						Brewery.getInstance().log("true");
 					} else {
-						P.p.log("false3");
+						Brewery.getInstance().log("false3");
 					}
 				} else {
-					P.p.log("false2");
+					Brewery.getInstance().log("false2");
 				}
 			} else {
-				P.p.log("false1");
+				Brewery.getInstance().log("false1");
 			}*//*
 
 			in.close();
 		} catch (IllegalArgumentException argExc) {
-			P.p.log("No Data in Lore");
+			Brewery.getInstance().log("No Data in Lore");
 
 			try {
 
@@ -150,12 +150,12 @@ public class RecipeTests {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}*/
 	}
 
 	public static void onLoad() {
-		//P.p.log("§" + (use1_9 ? "a":"c") + "1.9 " + "§" + (use1_11 ? "a":"c") + "1.11 " + "§" + (use1_13 ? "a":"c") + "1.13 " + "§" + (use1_14 ? "a":"c") + "1.14");
+		//Brewery.getInstance().log("§" + (use1_9 ? "a":"c") + "1.9 " + "§" + (use1_11 ? "a":"c") + "1.11 " + "§" + (use1_13 ? "a":"c") + "1.13 " + "§" + (use1_14 ? "a":"c") + "1.14");
 
 		/*long master = new SecureRandom().nextLong();
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -180,23 +180,23 @@ public class RecipeTests {
 			XORUnscrambleStream unscramble = new XORUnscrambleStream(new Base91DecoderStream(new ByteArrayInputStream(byteStream.toByteArray())), master);
 			dataIn = new DataInputStream(unscramble);
 			unscramble.start();
-			P.p.log(dataIn.readLong() + "");
+			Brewery.getInstance().log(dataIn.readLong() + "");
 			unscramble.stop();
-			P.p.log(dataIn.readInt() + "");
-			P.p.log(dataIn.readInt() + "");
+			Brewery.getInstance().log(dataIn.readInt() + "");
+			Brewery.getInstance().log(dataIn.readInt() + "");
 			unscramble.start();
-			P.p.log(dataIn.readDouble() + "");
+			Brewery.getInstance().log(dataIn.readDouble() + "");
 			dataIn.mark(1000);
-			P.p.log(dataIn.readInt() + "");
-			//P.p.log(dataIn.readUTF());
+			Brewery.getInstance().log(dataIn.readInt() + "");
+			//Brewery.getInstance().log(dataIn.readUTF());
 			dataIn.skip(8);
-			P.p.log(dataIn.readDouble() + "");
-			P.p.log("reset");
+			Brewery.getInstance().log(dataIn.readDouble() + "");
+			Brewery.getInstance().log("reset");
 			dataIn.reset();
-			P.p.log(dataIn.readInt() + "");
-			//P.p.log(dataIn.readUTF());
+			Brewery.getInstance().log(dataIn.readInt() + "");
+			//Brewery.getInstance().log(dataIn.readUTF());
 			dataIn.skip(8);
-			P.p.log(dataIn.readDouble() + "");
+			Brewery.getInstance().log(dataIn.readDouble() + "");
 
 			dataIn.close();
 
@@ -215,7 +215,7 @@ public class RecipeTests {
 				data.writeInt(234323);
 				data.writeDouble(0.55555D);
 
-				P.p.log(byteStream.toString());
+				Brewery.getInstance().log(byteStream.toString());
 				data.close();
 			}*//*
 
@@ -272,13 +272,13 @@ public class RecipeTests {
 			}
 			long time3 = System.currentTimeMillis();
 
-			P.p.log("Time with base91: " + (time2 - time));
-			P.p.log("Time without base91: " + (time3 - time2));
+			Brewery.getInstance().log("Time with base91: " + (time2 - time));
+			Brewery.getInstance().log("Time without base91: " + (time3 - time2));
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		} catch (InvalidKeyException e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		} finally {
 			try {
 				data.close();
@@ -286,7 +286,7 @@ public class RecipeTests {
 					dataIn.close();
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Loggers.logException(e, Brewery.getInstance().getLogger());
 			}
 		}*/
 
@@ -312,13 +312,13 @@ public class RecipeTests {
 
 			DataInputStream dataIn = new DataInputStream(new Base91DecoderStream(new LoreLoadStream(meta)));
 
-			P.p.log(dataIn.readInt() + ", " + dataIn.readLong() + ", ");
+			Brewery.getInstance().log(dataIn.readInt() + ", " + dataIn.readLong() + ", ");
 
 			byte[] testIn = new byte[128];
 			dataIn.read(testIn);
-			P.p.log(testIn[1] + ", " + testIn[2] + ", " + testIn[3] + ", " + testIn[127]);
+			Brewery.getInstance().log(testIn[1] + ", " + testIn[2] + ", " + testIn[3] + ", " + testIn[127]);
 
-			P.p.log(dataIn.readInt() + ", " + dataIn.readLong() + ", ");
+			Brewery.getInstance().log(dataIn.readInt() + ", " + dataIn.readLong() + ", ");
 
 			dataIn.close();
 
@@ -400,7 +400,7 @@ public class RecipeTests {
 			test = test;
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}*/
 	}
 }

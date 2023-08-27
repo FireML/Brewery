@@ -77,12 +77,12 @@ public class DistortChat {
 							if (Character.isSpaceChar(chat.charAt(command.length()))) {
 								if (chat.toLowerCase().startsWith(command.toLowerCase())) {
 									if (log) {
-										P.p.log(P.p.languageReader.get("Player_TriedToSay", name, chat));
+										Brewery.getInstance().log(Brewery.getInstance().languageReader.get("Player_TriedToSay", name, chat));
 									}
 									String message = chat.substring(command.length() + 1);
 									String distorted = distortMessage(message, bPlayer.getDrunkeness());
 									PlayerChatDistortEvent call = new PlayerChatDistortEvent(event.isAsynchronous(), event.getPlayer(), bPlayer, message, distorted);
-									P.p.getServer().getPluginManager().callEvent(call);
+									Brewery.getInstance().getServer().getPluginManager().callEvent(call);
 									if (call.isCancelled()) {
 										return;
 									}
@@ -110,7 +110,7 @@ public class DistortChat {
 					if (message.length() > 1) {
 						String distorted = distortMessage(message, bPlayer.getDrunkeness());
 						PlayerChatDistortEvent call = new PlayerChatDistortEvent(event.isAsynchronous(), event.getPlayer(), bPlayer, message, distorted);
-						P.p.getServer().getPluginManager().callEvent(call);
+						Brewery.getInstance().getServer().getPluginManager().callEvent(call);
 						if (!call.isCancelled()) {
 							distorted = call.getDistortedMessage();
 
@@ -133,12 +133,12 @@ public class DistortChat {
 			if (!words.isEmpty()) {
 				String message = event.getMessage();
 				if (log) {
-					P.p.log(P.p.languageReader.get("Player_TriedToSay", event.getPlayer().getName(), message));
+					Brewery.getInstance().log(Brewery.getInstance().languageReader.get("Player_TriedToSay", event.getPlayer().getName(), message));
 				}
 
 				String distorted = distortMessage(message, bPlayer.getDrunkeness());
 				PlayerChatDistortEvent call = new PlayerChatDistortEvent(event.isAsynchronous(), event.getPlayer(), bPlayer, message, distorted);
-				P.p.getServer().getPluginManager().callEvent(call);
+				Brewery.getInstance().getServer().getPluginManager().callEvent(call);
 				if (call.isCancelled()) {
 					return;
 				}
@@ -271,7 +271,7 @@ public class DistortChat {
 					}
 				}
 			} catch (java.util.regex.PatternSyntaxException e) {
-				// e.printStackTrace();
+				// Loggers.logException(e, Brewery.getInstance().getLogger());
 				return words;
 			}
 		}

@@ -1,10 +1,7 @@
 package com.dre.brewery.filedata;
 
-import com.dre.brewery.BSealer;
-import com.dre.brewery.Brew;
-import com.dre.brewery.DistortChat;
-import com.dre.brewery.MCBarrel;
-import com.dre.brewery.P;
+import com.dre.brewery.*;
+import com.dre.brewery.Brewery;
 import com.dre.brewery.api.events.ConfigLoadEvent;
 import com.dre.brewery.integration.barrel.WGBarrel;
 import com.dre.brewery.integration.barrel.WGBarrel7;
@@ -23,6 +20,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import uk.firedev.poleislib.Loggers;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +89,7 @@ public class BConfig {
 	public static SQLSync sqlSync;
 	public static boolean sqlDrunkSync;
 
-	public static P p = P.p;
+	public static Brewery p = Brewery.getInstance();
 
 	private static boolean checkConfigs() {
 		File cfg = new File(p.getDataFolder(), "config.yml");
@@ -99,7 +97,7 @@ public class BConfig {
 			p.log("§1§lNo config.yml found, creating default file! You may want to choose a config according to your language!");
 			p.log("§1§lYou can find them in plugins/Brewery/configs/");
 			p.log("§1§lJust copy the config for your language into the Brewery folder and /brew reload");
-			InputStream defconf = p.getResource("config/" + (P.use1_13 ? "v13/" : "v12/") + "en/config.yml");
+			InputStream defconf = p.getResource("config/" + (Brewery.getInstance().use1_13 ? "v13/" : "v12/") + "en/config.yml");
 			if (defconf == null) {
 				p.errorLog("default config file not found, your jarfile may be corrupt. Disabling Brewery!");
 				return false;
@@ -107,7 +105,7 @@ public class BConfig {
 			try {
 				BUtil.saveFile(defconf, p.getDataFolder(), "config.yml", false);
 			} catch (IOException e) {
-				e.printStackTrace();
+				Loggers.logException(e, Brewery.getInstance().getLogger());
 				return false;
 			}
 		}
@@ -126,19 +124,19 @@ public class BConfig {
 		for (String l : new String[] {"de", "en", "fr", "it", "zh", "tw"}) {
 			File lfold = new File(configs, l);
 			try {
-				BUtil.saveFile(p.getResource("config/" + (P.use1_13 ? "v13/" : "v12/") + l + "/config.yml"), lfold, "config.yml", overwrite);
+				BUtil.saveFile(p.getResource("config/" + (Brewery.getInstance().use1_13 ? "v13/" : "v12/") + l + "/config.yml"), lfold, "config.yml", overwrite);
 				BUtil.saveFile(p.getResource("languages/" + l + ".yml"), languages, l + ".yml", false); // Never overwrite languages, they get updated with their updater
 			} catch (IOException e) {
 				if (!(l.equals("zh") || l.equals("tw"))) {
 					// zh and tw not available for some versions
-					e.printStackTrace();
+					Loggers.logException(e, Brewery.getInstance().getLogger());
 				}
 			}
 		}
 	}
 
 	public static FileConfiguration loadConfigFile() {
-		File file = new File(P.p.getDataFolder(), "config.yml");
+		File file = new File(Brewery.getInstance().getDataFolder(), "config.yml");
 		if (!checkConfigs()) {
 			return null;
 		}
@@ -149,14 +147,14 @@ public class BConfig {
 				return cfg;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 
 		// Failed to load
 		if (p.languageReader != null) {
-			P.p.errorLog(p.languageReader.get("Error_YmlRead"));
+			Brewery.getInstance().errorLog(p.languageReader.get("Error_YmlRead"));
 		} else {
-			P.p.errorLog("Could not read file config.yml, please make sure the file is in valid yml format (correct spaces etc.)");
+			Brewery.getInstance().errorLog("Could not read file config.yml, please make sure the file is in valid yml format (correct spaces etc.)");
 		}
 		return null;
 	}
@@ -174,11 +172,11 @@ public class BConfig {
 		// Check if config is the newest version
 		String version = config.getString("version", null);
 		if (version != null) {
-			if (!version.equals(configVersion) || (oldMat && P.use1_13)) {
-				File file = new File(P.p.getDataFolder(), "config.yml");
+			if (!version.equals(configVersion) || (oldMat && Brewery.getInstance().use1_13)) {
+				File file = new File(Brewery.getInstance().getDataFolder(), "config.yml");
 				copyDefaultConfigs(true);
 				new ConfigUpdater(file).update(version, oldMat, p.language, config);
-				P.p.log("Config Updated to version: " + configVersion);
+				Brewery.getInstance().log("Config Updated to version: " + configVersion);
 				config = YamlConfiguration.loadConfiguration(file);
 			}
 		}
@@ -199,7 +197,7 @@ public class BConfig {
 
 		// various Settings
 		DataSave.autosave = config.getInt("autosave", 3);
-		P.debug = config.getBoolean("debug", false);
+		Brewery.getInstance().debug = config.getBoolean("debug", false);
 		pukeItem = Material.matchMaterial(config.getString("pukeItem", "SOUL_SAND"));
 		hangoverTime = config.getInt("hangoverDays", 0) * 24 * 60;
 		overdrinkKick = config.getBoolean("enableKickOnOverdrink", false);
@@ -219,20 +217,20 @@ public class BConfig {
 		alwaysShowAlc = config.getBoolean("alwaysShowAlc", false);
 		enableEncode = config.getBoolean("enableEncode", false);
 		openEverywhere = config.getBoolean("openLargeBarrelEverywhere", false);
-		enableCauldronParticles = P.use1_9 && config.getBoolean("enableCauldronParticles", false);
+		enableCauldronParticles = Brewery.getInstance().use1_9 && config.getBoolean("enableCauldronParticles", false);
 		minimalParticles = config.getBoolean("minimalParticles", false);
 		useOffhandForCauldron = config.getBoolean("useOffhandForCauldron", false);
 		loadDataAsync = config.getBoolean("loadDataAsync", true);
 		brewHopperDump = config.getBoolean("brewHopperDump", false);
 
-		if (P.use1_14) {
+		if (Brewery.getInstance().use1_14) {
 			MCBarrel.maxBrews = config.getInt("maxBrewsInMCBarrels", 6);
 			MCBarrel.enableAging = config.getBoolean("ageInMCBarrels", true);
 		}
 
-		Brew.loadSeed(config, new File(P.p.getDataFolder(), "config.yml"));
+		Brew.loadSeed(config, new File(Brewery.getInstance().getDataFolder(), "config.yml"));
 
-		if (!P.use1_13) {
+		if (!Brewery.getInstance().use1_13) {
 			// world.getBlockAt loads Chunks in 1.12 and lower. Can't load async
 			loadDataAsync = false;
 		}
@@ -322,7 +320,7 @@ public class BConfig {
 		DistortChat.doSigns = config.getBoolean("distortSignText", false);
 
 		// Register Sealing Table Recipe
-		if (P.use1_14) {
+		if (Brewery.getInstance().use1_14) {
 			if (craftSealingTable && !BSealer.recipeRegistered) {
 				BSealer.registerRecipe();
 			} else if (!craftSealingTable && BSealer.recipeRegistered) {
@@ -336,9 +334,9 @@ public class BConfig {
 				wg = new WGBarrel7();
 			}
 			if (wg == null) {
-				P.p.errorLog("Failed loading WorldGuard Integration! Opening Barrels will NOT work!");
-				P.p.errorLog("Brewery was tested with version 5.8, 6.1 and 7.0 of WorldGuard!");
-				P.p.errorLog("Disable the WorldGuard support in the config and do /brew reload");
+				Brewery.getInstance().errorLog("Failed loading WorldGuard Integration! Opening Barrels will NOT work!");
+				Brewery.getInstance().errorLog("Brewery was tested with version 5.8, 6.1 and 7.0 of WorldGuard!");
+				Brewery.getInstance().errorLog("Disable the WorldGuard support in the config and do /brew reload");
 			}
 		}
 
@@ -369,7 +367,7 @@ public class BConfig {
 
 		// The Config was reloaded, call Event
 		ConfigLoadEvent event = new ConfigLoadEvent();
-		P.p.getServer().getPluginManager().callEvent(event);
+		Brewery.getInstance().getServer().getPluginManager().callEvent(event);
 
 
 	}

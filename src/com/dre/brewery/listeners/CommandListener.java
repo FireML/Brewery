@@ -27,7 +27,7 @@ import static com.dre.brewery.utility.PermissionUtil.BPermission.*;
 
 public class CommandListener implements CommandExecutor {
 
-	public P p = P.p;
+	public Brewery p = Brewery.getInstance();
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -207,7 +207,7 @@ public class CommandListener implements CommandExecutor {
 			cmds.add (p.languageReader.get("Help_Info"));
 		}
 
-		if (P.use1_13 && SEAL.checkCached(sender)) {
+		if (Brewery.getInstance().use1_13 && SEAL.checkCached(sender)) {
 			cmds.add (p.languageReader.get("Help_Seal"));
 		}
 
@@ -337,7 +337,7 @@ public class CommandListener implements CommandExecutor {
 		}
 
 		String playerName = args[0];
-		Player player = P.p.getServer().getPlayerExact(playerName);
+		Player player = Brewery.getInstance().getServer().getPlayerExact(playerName);
 		BPlayer bPlayer;
 		if (player == null) {
 			bPlayer = BPlayer.getByName(playerName);
@@ -389,7 +389,7 @@ public class CommandListener implements CommandExecutor {
 			}
 		}
 
-		Player player = P.p.getServer().getPlayerExact(playerName);
+		Player player = Brewery.getInstance().getServer().getPlayerExact(playerName);
 		BPlayer bPlayer;
 		if (player == null) {
 			bPlayer = BPlayer.getByName(playerName);
@@ -416,7 +416,7 @@ public class CommandListener implements CommandExecutor {
 
 		Player player = (Player) sender;
 		@SuppressWarnings("deprecation")
-		ItemStack hand = P.use1_9 ? player.getInventory().getItemInMainHand() : player.getItemInHand();
+		ItemStack hand = Brewery.getInstance().use1_9 ? player.getInventory().getItemInMainHand() : player.getItemInHand();
 		if (hand != null) {
 			p.msg(sender, p.languageReader.get("CMD_Configname", hand.getType().name().toLowerCase(Locale.ENGLISH)));
 		} else {
@@ -426,8 +426,8 @@ public class CommandListener implements CommandExecutor {
 	}
 
 	public void cmdSeal(CommandSender sender) {
-		if (!P.use1_13) {
-			P.p.msg(sender, "Sealing requires minecraft 1.13 or higher");
+		if (!Brewery.getInstance().use1_13) {
+			Brewery.getInstance().msg(sender, "Sealing requires minecraft 1.13 or higher");
 			return;
 		}
 		if (!(sender instanceof Player)) {
@@ -491,7 +491,7 @@ public class CommandListener implements CommandExecutor {
 	}
 
 	public void debugInfo(CommandSender sender, String recipeName) {
-		if (!P.use1_9 || !sender.isOp()) return;
+		if (!Brewery.getInstance().use1_9 || !sender.isOp()) return;
 		if (!(sender instanceof Player)) {
 			p.msg(sender, p.languageReader.get("Error_PlayerCommand"));
 			return;
@@ -501,59 +501,59 @@ public class CommandListener implements CommandExecutor {
 		if (hand != null) {
 			Brew brew = Brew.get(hand);
 			if (brew == null) return;
-			P.p.log(brew.toString());
+			Brewery.getInstance().log(brew.toString());
 			BIngredients ingredients = brew.getIngredients();
 			if (recipeName == null) {
-				P.p.log("&lIngredients:");
+				Brewery.getInstance().log("&lIngredients:");
 				for (Ingredient ing : ingredients.getIngredientList()) {
-					P.p.log(ing.toString());
+					Brewery.getInstance().log(ing.toString());
 				}
-				P.p.log("&lTesting Recipes");
+				Brewery.getInstance().log("&lTesting Recipes");
 				for (BRecipe recipe : BRecipe.getAllRecipes()) {
 					int ingQ = ingredients.getIngredientQuality(recipe);
 					int cookQ = ingredients.getCookingQuality(recipe, false);
 					int cookDistQ = ingredients.getCookingQuality(recipe, true);
 					int ageQ = ingredients.getAgeQuality(recipe, brew.getAgeTime());
-					P.p.log(recipe.getRecipeName() + ": ingQlty: " + ingQ + ", cookQlty:" + cookQ + ", cook+DistQlty: " + cookDistQ + ", ageQlty: " + ageQ);
+					Brewery.getInstance().log(recipe.getRecipeName() + ": ingQlty: " + ingQ + ", cookQlty:" + cookQ + ", cook+DistQlty: " + cookDistQ + ", ageQlty: " + ageQ);
 				}
 				BRecipe distill = ingredients.getBestRecipe(brew.getWood(), brew.getAgeTime(), true);
 				BRecipe nonDistill = ingredients.getBestRecipe(brew.getWood(), brew.getAgeTime(), false);
-				P.p.log("&lWould prefer Recipe: " + (nonDistill == null ? "none" : nonDistill.getRecipeName()) + " and Distill-Recipe: " + (distill == null ? "none" : distill.getRecipeName()));
+				Brewery.getInstance().log("&lWould prefer Recipe: " + (nonDistill == null ? "none" : nonDistill.getRecipeName()) + " and Distill-Recipe: " + (distill == null ? "none" : distill.getRecipeName()));
 			} else {
 				BRecipe recipe = BRecipe.getMatching(recipeName);
 				if (recipe == null) {
-					P.p.msg(player, "Could not find Recipe " + recipeName);
+					Brewery.getInstance().msg(player, "Could not find Recipe " + recipeName);
 					return;
 				}
-				P.p.log("&lIngredients in Recipe " + recipe.getRecipeName() + ":");
+				Brewery.getInstance().log("&lIngredients in Recipe " + recipe.getRecipeName() + ":");
 				for (RecipeItem ri : recipe.getIngredients()) {
-					P.p.log(ri.toString());
+					Brewery.getInstance().log(ri.toString());
 				}
-				P.p.log("&lIngredients in Brew:");
+				Brewery.getInstance().log("&lIngredients in Brew:");
 				for (Ingredient ingredient : ingredients.getIngredientList()) {
 					int amountInRecipe = recipe.amountOf(ingredient);
-					P.p.log(ingredient.toString() + ": " + amountInRecipe + " of this are in the Recipe");
+					Brewery.getInstance().log(ingredient.toString() + ": " + amountInRecipe + " of this are in the Recipe");
 				}
 				int ingQ = ingredients.getIngredientQuality(recipe);
 				int cookQ = ingredients.getCookingQuality(recipe, false);
 				int cookDistQ = ingredients.getCookingQuality(recipe, true);
 				int ageQ = ingredients.getAgeQuality(recipe, brew.getAgeTime());
-				P.p.log("ingQlty: " + ingQ + ", cookQlty:" + cookQ + ", cook+DistQlty: " + cookDistQ  + ", ageQlty: " + ageQ);
+				Brewery.getInstance().log("ingQlty: " + ingQ + ", cookQlty:" + cookQ + ", cook+DistQlty: " + cookDistQ  + ", ageQlty: " + ageQ);
 			}
 
-			P.p.msg(player, "Debug Info for item written into Log");
+			Brewery.getInstance().msg(player, "Debug Info for item written into Log");
 		}
 	}
 
 	public void showStats(CommandSender sender) {
 		if (sender instanceof ConsoleCommandSender && !sender.isOp()) return;
 
-		P.p.msg(sender, "Drunk Players: " + BPlayer.numDrunkPlayers());
-		P.p.msg(sender, "Brews created: " + P.p.stats.brewsCreated);
-		P.p.msg(sender, "Barrels built: " + Barrel.barrels.size());
-		P.p.msg(sender, "Cauldrons boiling: " + BCauldron.bcauldrons.size());
-		P.p.msg(sender, "Number of Recipes: " + BRecipe.getAllRecipes().size());
-		P.p.msg(sender, "Wakeups: " + Wakeup.wakeups.size());
+		Brewery.getInstance().msg(sender, "Drunk Players: " + BPlayer.numDrunkPlayers());
+		Brewery.getInstance().msg(sender, "Brews created: " + Brewery.getInstance().stats.brewsCreated);
+		Brewery.getInstance().msg(sender, "Barrels built: " + Barrel.barrels.size());
+		Brewery.getInstance().msg(sender, "Cauldrons boiling: " + BCauldron.bcauldrons.size());
+		Brewery.getInstance().msg(sender, "Number of Recipes: " + BRecipe.getAllRecipes().size());
+		Brewery.getInstance().msg(sender, "Wakeups: " + Wakeup.wakeups.size());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -584,7 +584,7 @@ public class CommandListener implements CommandExecutor {
 				ItemMeta meta = hand.getItemMeta();
 				assert meta != null;
 				BrewModifyEvent modifyEvent = new BrewModifyEvent(brew, meta, BrewModifyEvent.Type.STATIC);
-				P.p.getServer().getPluginManager().callEvent(modifyEvent);
+				Brewery.getInstance().getServer().getPluginManager().callEvent(modifyEvent);
 				if (modifyEvent.isCancelled()) {
 					return;
 				}
@@ -616,7 +616,7 @@ public class CommandListener implements CommandExecutor {
 					ItemMeta meta = hand.getItemMeta();
 					assert meta != null;
 					BrewModifyEvent modifyEvent = new BrewModifyEvent(brew, meta, BrewModifyEvent.Type.UNLABEL);
-					P.p.getServer().getPluginManager().callEvent(modifyEvent);
+					Brewery.getInstance().getServer().getPluginManager().callEvent(modifyEvent);
 					if (modifyEvent.isCancelled()) {
 						hand.setItemMeta(origMeta);
 						return;
@@ -756,7 +756,7 @@ public class CommandListener implements CommandExecutor {
 		}
 		int count = 0;
 		if (args.length > 2) {
-			count = P.p.parseInt(args[2]);
+			count = Brewery.getInstance().parseInt(args[2]);
 		}
 		if (count <= 0) {
 			count = 20 + (int) (Math.random() * 40);

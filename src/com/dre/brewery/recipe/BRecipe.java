@@ -2,7 +2,7 @@ package com.dre.brewery.recipe;
 
 import com.dre.brewery.BIngredients;
 import com.dre.brewery.Brew;
-import com.dre.brewery.P;
+import com.dre.brewery.Brewery;
 import com.dre.brewery.filedata.BConfig;
 import com.dre.brewery.utility.BUtil;
 import com.dre.brewery.utility.StringParser;
@@ -97,17 +97,17 @@ public class BRecipe {
 				recipe.name[0] = name[0];
 			}
 		} else {
-			P.p.errorLog(recipeId + ": Recipe Name missing or invalid!");
+			Brewery.getInstance().errorLog(recipeId + ": Recipe Name missing or invalid!");
 			return null;
 		}
 		if (recipe.getRecipeName() == null || recipe.getRecipeName().length() < 1) {
-			P.p.errorLog(recipeId + ": Recipe Name invalid");
+			Brewery.getInstance().errorLog(recipeId + ": Recipe Name invalid");
 			return null;
 		}
 
 		recipe.ingredients = loadIngredients(configSectionRecipes, recipeId);
 		if (recipe.ingredients == null || recipe.ingredients.isEmpty()) {
-			P.p.errorLog("No ingredients for: " + recipe.getRecipeName());
+			Brewery.getInstance().errorLog("No ingredients for: " + recipe.getRecipeName());
 			return null;
 		}
 		recipe.cookingTime = configSectionRecipes.getInt(recipeId + ".cookingtime", 1);
@@ -126,7 +126,7 @@ public class BRecipe {
 		String col = configSectionRecipes.getString(recipeId + ".color", "BLUE");
 		recipe.color = PotionColor.fromString(col);
 		if (recipe.color == PotionColor.WATER && !col.equals("WATER")) {
-			P.p.errorLog("Invalid Color '" + col + "' in Recipe: " + recipe.getRecipeName());
+			Brewery.getInstance().errorLog("Invalid Color '" + col + "' in Recipe: " + recipe.getRecipeName());
 			return null;
 		}
 
@@ -135,18 +135,18 @@ public class BRecipe {
 		recipe.servercmds = loadQualityStringList(configSectionRecipes, recipeId + ".servercommands", StringParser.ParseType.CMD);
 		recipe.playercmds = loadQualityStringList(configSectionRecipes, recipeId + ".playercommands", StringParser.ParseType.CMD);
 
-		recipe.drinkMsg = P.p.color(BUtil.loadCfgString(configSectionRecipes, recipeId + ".drinkmessage"));
-		recipe.drinkTitle = P.p.color(BUtil.loadCfgString(configSectionRecipes, recipeId + ".drinktitle"));
+		recipe.drinkMsg = Brewery.getInstance().color(BUtil.loadCfgString(configSectionRecipes, recipeId + ".drinkmessage"));
+		recipe.drinkTitle = Brewery.getInstance().color(BUtil.loadCfgString(configSectionRecipes, recipeId + ".drinktitle"));
 		if (configSectionRecipes.isString(recipeId + ".customModelData")) {
 			String[] cmdParts = configSectionRecipes.getString(recipeId + ".customModelData", "").split("/");
 			if (cmdParts.length == 3) {
-				recipe.cmData = new int[]{P.p.parseInt(cmdParts[0]), P.p.parseInt(cmdParts[1]), P.p.parseInt(cmdParts[2])};
+				recipe.cmData = new int[]{Brewery.getInstance().parseInt(cmdParts[0]), Brewery.getInstance().parseInt(cmdParts[1]), Brewery.getInstance().parseInt(cmdParts[2])};
 				if (recipe.cmData[0] == 0 && recipe.cmData[1] == 0 && recipe.cmData[2] == 0) {
-					P.p.errorLog("Invalid customModelData in Recipe: " + recipe.getRecipeName());
+					Brewery.getInstance().errorLog("Invalid customModelData in Recipe: " + recipe.getRecipeName());
 					recipe.cmData = null;
 				}
 			} else {
-				P.p.errorLog("Invalid customModelData in Recipe: " + recipe.getRecipeName());
+				Brewery.getInstance().errorLog("Invalid customModelData in Recipe: " + recipe.getRecipeName());
 			}
 		} else {
 			int cmd = configSectionRecipes.getInt(recipeId + ".customModelData", 0);
@@ -162,7 +162,7 @@ public class BRecipe {
 				if (effect.isValid()) {
 					recipe.effects.add(effect);
 				} else {
-					P.p.errorLog("Error adding Effect to Recipe: " + recipe.getRecipeName());
+					Brewery.getInstance().errorLog("Error adding Effect to Recipe: " + recipe.getRecipeName());
 				}
 			}
 		}
@@ -185,9 +185,9 @@ public class BRecipe {
 			String[] ingredParts = item.split("/");
 			int amount = 1;
 			if (ingredParts.length == 2) {
-				amount = P.p.parseInt(ingredParts[1]);
+				amount = Brewery.getInstance().parseInt(ingredParts[1]);
 				if (amount < 1) {
-					P.p.errorLog(recipeId + ": Invalid Item Amount: " + ingredParts[1]);
+					Brewery.getInstance().errorLog(recipeId + ": Invalid Item Amount: " + ingredParts[1]);
 					return null;
 				}
 			}
@@ -200,7 +200,7 @@ public class BRecipe {
 				matParts = ingredParts[0].split("\\.");
 			}
 
-			if (!P.use1_14 && matParts[0].equalsIgnoreCase("sweet_berries")) {
+			if (!Brewery.getInstance().use1_14 && matParts[0].equalsIgnoreCase("sweet_berries")) {
 				// Using this in default recipes, but will error on < 1.14
 				ingredients.add(new SimpleItem(Material.BEDROCK));
 				continue;
@@ -218,7 +218,7 @@ public class BRecipe {
 					continue;
 				} else {
 					// TODO Maybe load later ie on first use of recipe?
-					P.p.errorLog(recipeId + ": Could not Find Plugin: " + ingredParts[1]);
+					Brewery.getInstance().errorLog(recipeId + ": Could not Find Plugin: " + ingredParts[1]);
 					return null;
 				}
 			}
@@ -252,7 +252,7 @@ public class BRecipe {
 			Material mat = Material.matchMaterial(matParts[0]);
 			short durability = -1;
 			if (matParts.length == 2) {
-				durability = (short) P.p.parseInt(matParts[1]);
+				durability = (short) Brewery.getInstance().parseInt(matParts[1]);
 			}
 			if (mat != null) {
 				RecipeItem rItem;
@@ -267,7 +267,7 @@ public class BRecipe {
 				BCauldronRecipe.acceptedMaterials.add(mat);
 				BCauldronRecipe.acceptedSimple.add(mat);
 			} else {
-				P.p.errorLog(recipeId + ": Unknown Material: " + ingredParts[0]);
+				Brewery.getInstance().errorLog(recipeId + ": Unknown Material: " + ingredParts[0]);
 				return null;
 			}
 		}
@@ -291,31 +291,31 @@ public class BRecipe {
 	 */
 	public boolean isValid() {
 		if (ingredients == null || ingredients.isEmpty()) {
-			P.p.errorLog("No ingredients could be loaded for Recipe: " + getRecipeName());
+			Brewery.getInstance().errorLog("No ingredients could be loaded for Recipe: " + getRecipeName());
 			return false;
 		}
 		if (cookingTime < 1) {
-			P.p.errorLog("Invalid cooking time '" + cookingTime + "' in Recipe: " + getRecipeName());
+			Brewery.getInstance().errorLog("Invalid cooking time '" + cookingTime + "' in Recipe: " + getRecipeName());
 			return false;
 		}
 		if (distillruns < 0) {
-			P.p.errorLog("Invalid distillruns '" + distillruns + "' in Recipe: " + getRecipeName());
+			Brewery.getInstance().errorLog("Invalid distillruns '" + distillruns + "' in Recipe: " + getRecipeName());
 			return false;
 		}
 		if (distillTime < 0) {
-			P.p.errorLog("Invalid distilltime '" + distillTime + "' in Recipe: " + getRecipeName());
+			Brewery.getInstance().errorLog("Invalid distilltime '" + distillTime + "' in Recipe: " + getRecipeName());
 			return false;
 		}
 		if (wood < 0 || wood > 11) {
-			P.p.errorLog("Invalid wood type '" + wood + "' in Recipe: " + getRecipeName());
+			Brewery.getInstance().errorLog("Invalid wood type '" + wood + "' in Recipe: " + getRecipeName());
 			return false;
 		}
 		if (age < 0) {
-			P.p.errorLog("Invalid age time '" + age + "' in Recipe: " + getRecipeName());
+			Brewery.getInstance().errorLog("Invalid age time '" + age + "' in Recipe: " + getRecipeName());
 			return false;
 		}
 		if (difficulty < 0 || difficulty > 10) {
-			P.p.errorLog("Invalid difficulty '" + difficulty + "' in Recipe: " + getRecipeName());
+			Brewery.getInstance().errorLog("Invalid difficulty '" + difficulty + "' in Recipe: " + getRecipeName());
 			return false;
 		}
 		return true;
@@ -402,7 +402,7 @@ public class BRecipe {
 		List<String> serverCmdsForQuality = getServercmdsForQuality(quality);
 		if (serverCmdsForQuality != null) {
 			for (String cmd : serverCmdsForQuality) {
-				P.p.getServer().dispatchCommand(P.p.getServer().getConsoleSender(), BUtil.applyPlaceholders(cmd, player.getName(), quality));
+				Brewery.getInstance().getServer().dispatchCommand(Brewery.getInstance().getServer().getConsoleSender(), BUtil.applyPlaceholders(cmd, player.getName(), quality));
 			}
 		}
 		if (drinkMsg != null) {

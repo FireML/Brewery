@@ -2,8 +2,7 @@ package com.dre.brewery.listeners;
 
 import com.dre.brewery.BCauldron;
 import com.dre.brewery.Barrel;
-import com.dre.brewery.P;
-import com.dre.brewery.Wakeup;
+import com.dre.brewery.Brewery;
 import com.dre.brewery.filedata.BConfig;
 import com.dre.brewery.filedata.BData;
 import com.dre.brewery.filedata.DataSave;
@@ -14,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
+import uk.firedev.poleislib.Loggers;
 
 public class WorldListener implements Listener {
 
@@ -21,7 +21,7 @@ public class WorldListener implements Listener {
 	public void onWorldLoad(WorldLoadEvent event) {
 		final World world = event.getWorld();
 		if (BConfig.loadDataAsync) {
-			P.p.getServer().getScheduler().runTaskAsynchronously(P.p, () -> lwDataTask(world));
+			Brewery.getInstance().getServer().getScheduler().runTaskAsynchronously(Brewery.getInstance(), () -> lwDataTask(world));
 		} else {
 			lwDataTask(world);
 		}
@@ -37,7 +37,7 @@ public class WorldListener implements Listener {
 				BData.loadWorldData(world.getUID().toString(), world);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		} finally {
 			BData.releaseDataLoadMutex();
 		}

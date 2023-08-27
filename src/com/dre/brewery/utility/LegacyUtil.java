@@ -1,6 +1,6 @@
 package com.dre.brewery.utility;
 
-import com.dre.brewery.P;
+import com.dre.brewery.Brewery;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -108,7 +108,7 @@ public class LegacyUtil {
 
 	private static Material get(String newName, String oldName) {
 		try {
-			return Material.valueOf(P.use1_13 ? newName : oldName);
+			return Material.valueOf(Brewery.getInstance().use1_13 ? newName : oldName);
 		} catch (IllegalArgumentException e) {
 			return null;
 		}
@@ -127,7 +127,7 @@ public class LegacyUtil {
 	}
 
 	public static boolean isSign(Material type) {
-		return type.name().endsWith("SIGN") || (!P.use1_13 && type == SIGN_POST);
+		return type.name().endsWith("SIGN") || (!Brewery.getInstance().use1_13 && type == SIGN_POST);
 	}
 
 	public static boolean isCauldronHeatsource(Block block) {
@@ -137,7 +137,7 @@ public class LegacyUtil {
 
 	// LAVA and STATIONARY_LAVA are merged as of 1.13
 	public static boolean isLava(Material type) {
-		return type == Material.LAVA || (!P.use1_13 && type == STATIONARY_LAVA);
+		return type == Material.LAVA || (!Brewery.getInstance().use1_13 && type == STATIONARY_LAVA);
 	}
 
 	public static boolean litCampfire(Block block) {
@@ -152,16 +152,16 @@ public class LegacyUtil {
 
 	public static boolean isBottle(Material type) {
 		if (type == Material.POTION) return true;
-		if (!P.use1_9) return false;
+		if (!Brewery.getInstance().use1_9) return false;
 		if (type == Material.LINGERING_POTION || type == Material.SPLASH_POTION) return true;
-		if (!P.use1_13) return false;
+		if (!Brewery.getInstance().use1_13) return false;
 		if (type == Material.EXPERIENCE_BOTTLE) return true;
 		if (type.name().equals("DRAGON_BREATH")) return true;
 		return type.name().equals("HONEY_BOTTLE");
 	}
 
 	public static boolean areStairsInverted(Block block) {
-		if (!P.use1_13) {
+		if (!Brewery.getInstance().use1_13) {
 			@SuppressWarnings("deprecation")
 			MaterialData data = block.getState().getData();
 			return data instanceof org.bukkit.material.Stairs && (((org.bukkit.material.Stairs) data).isInverted());
@@ -173,7 +173,7 @@ public class LegacyUtil {
 
 	public static byte getWoodType(Block wood) throws NoSuchFieldError, NoClassDefFoundError {
 
-		if (P.use1_13 || isWoodStairs(wood.getType())) {
+		if (Brewery.getInstance().use1_13 || isWoodStairs(wood.getType())) {
 			String material = wood.getType().name();
 			if (material.startsWith("OAK")) {
 				return 2;
@@ -249,7 +249,7 @@ public class LegacyUtil {
 			return EMPTY;
 		}
 
-		if (P.use1_13) {
+		if (Brewery.getInstance().use1_13) {
 			Levelled cauldron = ((Levelled) block.getBlockData());
 			if (cauldron.getLevel() == 0) {
 				return EMPTY;

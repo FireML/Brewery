@@ -1,12 +1,13 @@
 package com.dre.brewery.recipe;
 
-import com.dre.brewery.P;
+import com.dre.brewery.Brewery;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import uk.firedev.poleislib.Loggers;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -280,13 +281,13 @@ public class CustomItem extends RecipeItem implements Ingredient {
 			}
 			return item;
 		} catch (IOException e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 			return null;
 		}
 	}
 
 	// Needs to be called at Server start
-	public static void registerItemLoader(P p) {
+	public static void registerItemLoader(Brewery p) {
 		p.registerForItemLoader("CI", CustomItem::loadFrom);
 	}
 }

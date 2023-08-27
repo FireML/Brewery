@@ -1,10 +1,11 @@
 package com.dre.brewery.filedata;
 
-import com.dre.brewery.P;
+import com.dre.brewery.Brewery;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.Loggers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class UpdateChecker implements Runnable {
 		if (update == null || !player.isOp()) {
 			return;
 		}
-		P.p.msg(player, update);
+		Brewery.getInstance().msg(player, update);
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class UpdateChecker implements Runnable {
 		} catch (MalformedURLException e) {
 			// There was an error creating the URL
 
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 			return;
 		}
 
@@ -105,18 +106,18 @@ public class UpdateChecker implements Runnable {
 
 				String[] split = versionName.split(DELIMETER);
 				if (split.length < 2) {
-					P.p.log("Malformed Remote File Name, could not check for updates");
+					Brewery.getInstance().log("Malformed Remote File Name, could not check for updates");
 				} else {
 					String version = split[1];
-					if (!P.p.getDescription().getVersion().equals(split[1].split(" ")[0])) {
+					if (!Brewery.getInstance().getDescription().getVersion().equals(split[1].split(" ")[0])) {
 						String[] verNew = version.split("\\.");
-						String[] verOld = P.p.getDescription().getVersion().split("\\.");
+						String[] verOld = Brewery.getInstance().getDescription().getVersion().split("\\.");
 
 						for (int i = 0; i < verNew.length; i++) {
-							if (i < verOld.length && P.p.parseInt(verOld[i]) > P.p.parseInt(verNew[i])) {
+							if (i < verOld.length && Brewery.getInstance().parseInt(verOld[i]) > Brewery.getInstance().parseInt(verNew[i])) {
 								break;
-							} else if (i >= verOld.length || P.p.parseInt(verOld[i]) < P.p.parseInt(verNew[i])) {
-								P.p.log("Update available for Brewery-" + P.p.getDescription().getVersion() + ": " + versionName);
+							} else if (i >= verOld.length || Brewery.getInstance().parseInt(verOld[i]) < Brewery.getInstance().parseInt(verNew[i])) {
+								Brewery.getInstance().log("Update available for Brewery-" + Brewery.getInstance().getDescription().getVersion() + ": " + versionName);
 								update = "Update available: v" + version;
 								break;
 							}
@@ -125,12 +126,12 @@ public class UpdateChecker implements Runnable {
 				}
 
 			} else {
-				P.p.log("There are no files for this project");
+				Brewery.getInstance().log("There are no files for this project");
 			}
 		} catch (IOException e) {
 			// There was an error reading the query
-			P.p.errorLog("Could not check for Updates. This error can probably be ignored");
-			e.printStackTrace();
+			Brewery.getInstance().errorLog("Could not check for Updates. This error can probably be ignored");
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 	}
 }

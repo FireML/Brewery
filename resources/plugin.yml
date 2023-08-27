@@ -1,6 +1,6 @@
 name: Brewery
 version: ${project.version}
-main: com.dre.brewery.P
+main: com.dre.brewery.Brewery
 softdepend: [WorldEdit, WorldGuard, Vault, ChestShop]
 authors: [Milan Albrecht, Frank Baumann, ProgrammerDan, Daniel Saukel, FireML]
 api-version: '1.20'

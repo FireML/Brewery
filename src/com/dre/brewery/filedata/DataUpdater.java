@@ -1,11 +1,12 @@
 package com.dre.brewery.filedata;
 
+import com.dre.brewery.Brewery;
 import com.dre.brewery.utility.LegacyUtil;
-import com.dre.brewery.P;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import uk.firedev.poleislib.Loggers;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class DataUpdater {
 		try {
 			data.save(file);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 	}
 
@@ -60,21 +61,21 @@ public class DataUpdater {
 						Map<String, Integer> ingredients = new HashMap<>();
 						for (String ingredient : matSection.getKeys(false)) {
 							// convert to Material
-							Material mat = LegacyUtil.getMaterial(P.p.parseInt(ingredient));
+							Material mat = LegacyUtil.getMaterial(Brewery.getInstance().parseInt(ingredient));
 							if (mat != null) {
 								ingredients.put(mat.name(), matSection.getInt(ingredient));
 							}
 						}
 						section.set(id + ".mats", ingredients);
 					} else {
-						P.p.errorLog("Ingredient id: '" + id + "' incomplete in data.yml");
+						Brewery.getInstance().errorLog("Ingredient id: '" + id + "' incomplete in data.yml");
 					}
 				}
 			}
 		} catch (Exception e) {
 			// Getting Material by id may not work in the future
-			P.p.errorLog("Error Converting Ingredient Section of the Data File, newer versions of Bukkit may not support the old Save File anymore:");
-			e.printStackTrace();
+			Brewery.getInstance().errorLog("Error Converting Ingredient Section of the Data File, newer versions of Bukkit may not support the old Save File anymore:");
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 
 		section = data.getConfigurationSection("BCauldron");
@@ -90,22 +91,22 @@ public class DataUpdater {
 								Map<String, Integer> ingredients = new HashMap<>();
 								for (String ingredient : ingredientSection.getKeys(false)) {
 									// convert to Material
-									Material mat = LegacyUtil.getMaterial(P.p.parseInt(ingredient));
+									Material mat = LegacyUtil.getMaterial(Brewery.getInstance().parseInt(ingredient));
 									if (mat != null) {
 										ingredients.put(mat.name(), ingredientSection.getInt(ingredient));
 									}
 								}
 								cauldrons.set(id + ".ingredients", ingredients);
 							} else {
-								P.p.errorLog("BCauldron " + id + " is missing Ingredient Section");
+								Brewery.getInstance().errorLog("BCauldron " + id + " is missing Ingredient Section");
 							}
 						}
 					}
 				}
 			} catch (Exception e) {
 				// Getting Material by id may not work in the future
-				P.p.errorLog("Error Converting Ingredient Section of Cauldrons, newer versions of Bukkit may not support the old Save File anymore:");
-				e.printStackTrace();
+				Brewery.getInstance().errorLog("Error Converting Ingredient Section of Cauldrons, newer versions of Bukkit may not support the old Save File anymore:");
+				Loggers.logException(e, Brewery.getInstance().getLogger());
 			}
 		}
 	}
@@ -133,12 +134,12 @@ public class DataUpdater {
 
 		try {
 			worldData.save(worldFile);
-			File bkup = new File(P.p.getDataFolder(), "dataBackup.yml");
+			File bkup = new File(Brewery.getInstance().getDataFolder(), "dataBackup.yml");
 			if (bkup.exists()) {
-				bkup.renameTo(new File(P.p.getDataFolder(), "worlddataBackup.yml"));
+				bkup.renameTo(new File(Brewery.getInstance().getDataFolder(), "worlddataBackup.yml"));
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 	}
 }

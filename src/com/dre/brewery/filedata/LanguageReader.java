@@ -1,9 +1,10 @@
 package com.dre.brewery.filedata;
 
-import com.dre.brewery.P;
+import com.dre.brewery.Brewery;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import uk.firedev.poleislib.Loggers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,7 +40,7 @@ public class LanguageReader {
 		FileConfiguration defaults = null;
 		ConfigUpdater updater = null;
 		String line;
-		InputStream resource = P.p.getResource(defaultPath);
+		InputStream resource = Brewery.getInstance().getResource(defaultPath);
 		if (resource == null) return;
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource))) {
 			while ((line = reader.readLine()) != null) {
@@ -49,7 +50,7 @@ public class LanguageReader {
 					if (!entries.containsKey(key)) {
 						if (defaults == null) {
 							defaults = new YamlConfiguration();
-							defaults.load(new BufferedReader(new InputStreamReader(Objects.requireNonNull(P.p.getResource(defaultPath)))));
+							defaults.load(new BufferedReader(new InputStreamReader(Objects.requireNonNull(Brewery.getInstance().getResource(defaultPath)))));
 							updater = new ConfigUpdater(file);
 							updater.appendLines("", "# Updated");
 						}
@@ -61,11 +62,11 @@ public class LanguageReader {
 			if (updater != null) {
 				createBackup();
 				updater.saveConfig();
-				P.p.log("Language file updated");
+				Brewery.getInstance().log("Language file updated");
 			}
 		} catch (IOException | InvalidConfigurationException e) {
-			e.printStackTrace();
-			P.p.errorLog("Language File could not be updated");
+			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().errorLog("Language File could not be updated");
 		}
 	}
 

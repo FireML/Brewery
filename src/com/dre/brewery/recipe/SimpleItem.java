@@ -1,9 +1,10 @@
 package com.dre.brewery.recipe;
 
-import com.dre.brewery.P;
+import com.dre.brewery.Brewery;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import uk.firedev.poleislib.Loggers;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -64,7 +65,7 @@ public class SimpleItem extends RecipeItem implements Ingredient {
 			return false;
 		}
 		//noinspection deprecation
-		return P.use1_13 || dur == item.getDurability();
+		return Brewery.getInstance().use1_13 || dur == item.getDurability();
 	}
 
 	@Override
@@ -138,13 +139,13 @@ public class SimpleItem extends RecipeItem implements Ingredient {
 				return item;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 		return null;
 	}
 
 	// Needs to be called at Server start
-	public static void registerItemLoader(P p) {
+	public static void registerItemLoader(Brewery p) {
 		p.registerForItemLoader("SI", SimpleItem::loadFrom);
 	}
 

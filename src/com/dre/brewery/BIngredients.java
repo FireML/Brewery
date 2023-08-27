@@ -14,6 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.jetbrains.annotations.Nullable;
+import uk.firedev.poleislib.Loggers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -119,7 +120,7 @@ public class BIngredients {
 			// Potion is best with cooking only
 			int quality = (int) Math.round((getIngredientQuality(cookRecipe) + getCookingQuality(cookRecipe, false)) / 2.0);
 			int alc = (int) Math.round(cookRecipe.getAlcohol() * ((float) quality / 10.0f));
-			P.p.debugLog("cooked potion has Quality: " + quality + ", Alc: " + alc);
+			Brewery.getInstance().debugLog("cooked potion has Quality: " + quality + ", Alc: " + alc);
 			brew = new Brew(quality, alc, cookRecipe, this);
 			BrewLore lore = new BrewLore(brew, potionMeta);
 			lore.updateQualityStars(false);
@@ -137,12 +138,12 @@ public class BIngredients {
 			brew = new Brew(this);
 
 			if (state <= 0) {
-				cookedName = P.p.languageReader.get("Brew_ThickBrew");
+				cookedName = Brewery.getInstance().languageReader.get("Brew_ThickBrew");
 				PotionColor.BLUE.colorBrew(potionMeta, potion, false);
 			} else {
 				BCauldronRecipe cauldronRecipe = getCauldronRecipe();
 				if (cauldronRecipe != null) {
-					P.p.debugLog("Found Cauldron Recipe: " + cauldronRecipe.getName());
+					Brewery.getInstance().debugLog("Found Cauldron Recipe: " + cauldronRecipe.getName());
 					cookedName = cauldronRecipe.getName();
 					if (cauldronRecipe.getLore() != null) {
 						BrewLore lore = new BrewLore(brew, potionMeta);
@@ -150,7 +151,7 @@ public class BIngredients {
 						lore.write();
 					}
 					cauldronRecipe.getColor().colorBrew(potionMeta, potion, true);
-					if (P.use1_14 && cauldronRecipe.getCmData() != 0) {
+					if (Brewery.getInstance().use1_14 && cauldronRecipe.getCmData() != 0) {
 						potionMeta.setCustomModelData(cauldronRecipe.getCmData());
 					}
 				}
@@ -158,12 +159,12 @@ public class BIngredients {
 		}
 		if (cookedName == null) {
 			// if no name could be found
-			cookedName = P.p.languageReader.get("Brew_Undefined");
+			cookedName = Brewery.getInstance().languageReader.get("Brew_Undefined");
 			PotionColor.CYAN.colorBrew(potionMeta, potion, true);
 		}
 
-		potionMeta.setDisplayName(P.p.color("&f" + cookedName));
-		//if (!P.use1_14) {
+		potionMeta.setDisplayName(Brewery.getInstance().color("&f" + cookedName));
+		//if (!Brewery.getInstance().use1_14) {
 			// Before 1.14 the effects duration would strangely be only a quarter of what we tell it to be
 			// This is due to the Duration Modifier, that is removed in 1.14
 		//	uid *= 4;
@@ -173,13 +174,13 @@ public class BIngredients {
 
 		brew.touch();
 		BrewModifyEvent modifyEvent = new BrewModifyEvent(brew, potionMeta, BrewModifyEvent.Type.FILL);
-		P.p.getServer().getPluginManager().callEvent(modifyEvent);
+		Brewery.getInstance().getServer().getPluginManager().callEvent(modifyEvent);
 		if (modifyEvent.isCancelled()) {
 			return null;
 		}
 		brew.save(potionMeta);
 		potion.setItemMeta(potionMeta);
-		P.p.stats.metricsForCreate(false);
+		Brewery.getInstance().stats.metricsForCreate(false);
 
 		return potion;
 	}
@@ -222,7 +223,7 @@ public class BIngredients {
 					// needs riping in barrel
 					ageQuality = getAgeQuality(recipe, time);
 					woodQuality = getWoodQuality(recipe, wood);
-					P.p.debugLog("Ingredient Quality: " + ingredientQuality + " Cooking Quality: " + cookingQuality +
+					Brewery.getInstance().debugLog("Ingredient Quality: " + ingredientQuality + " Cooking Quality: " + cookingQuality +
 						" Wood Quality: " + woodQuality + " age Quality: " + ageQuality + " for " + recipe.getName(5));
 
 					// is this recipe better than the previous best?
@@ -231,7 +232,7 @@ public class BIngredients {
 						bestRecipe = recipe;
 					}
 				} else {
-					P.p.debugLog("Ingredient Quality: " + ingredientQuality + " Cooking Quality: " + cookingQuality + " for " + recipe.getName(5));
+					Brewery.getInstance().debugLog("Ingredient Quality: " + ingredientQuality + " Cooking Quality: " + cookingQuality + " for " + recipe.getName(5));
 					// calculate quality without age and barrel
 					if ((((float) ingredientQuality + cookingQuality) / 2) > quality) {
 						quality = ((float) ingredientQuality + cookingQuality) / 2;
@@ -241,7 +242,7 @@ public class BIngredients {
 			}
 		}
 		if (bestRecipe != null) {
-			P.p.debugLog("best recipe: " + bestRecipe.getName(5) + " has Quality= " + quality);
+			Brewery.getInstance().debugLog("best recipe: " + bestRecipe.getName(5) + " has Quality= " + quality);
 		}
 		return bestRecipe;
 	}
@@ -437,21 +438,21 @@ public class BIngredients {
 
 	public void testLoad(DataInputStream in) throws IOException {
 		if (in.readInt() != cookedTime) {
-			P.p.log("cookedtime wrong");
+			Brewery.getInstance().log("cookedtime wrong");
 		}
 		if (in.readUnsignedByte() != ingredients.size()) {
-			P.p.log("size wrong");
+			Brewery.getInstance().log("size wrong");
 			return;
 		}
 		for (ItemStack item : ingredients) {
 			if (!in.readUTF().equals(item.getType().name())) {
-				P.p.log("name wrong");
+				Brewery.getInstance().log("name wrong");
 			}
 			if (in.readShort() != item.getDurability()) {
-				P.p.log("dur wrong");
+				Brewery.getInstance().log("dur wrong");
 			}
 			if (in.readShort() != item.getAmount()) {
-				P.p.log("amount wrong");
+				Brewery.getInstance().log("amount wrong");
 			}
 		}
 	}*/
@@ -471,11 +472,11 @@ public class BIngredients {
 		List<Ingredient> ing = new ArrayList<>(size);
 		for (; size > 0; size--) {
 			ItemLoader itemLoader = new ItemLoader(dataVersion, in, in.readUTF());
-			if (!P.p.ingredientLoaders.containsKey(itemLoader.getSaveID())) {
-				P.p.errorLog("Ingredient Loader not found: " + itemLoader.getSaveID());
+			if (!Brewery.getInstance().ingredientLoaders.containsKey(itemLoader.getSaveID())) {
+				Brewery.getInstance().errorLog("Ingredient Loader not found: " + itemLoader.getSaveID());
 				break;
 			}
-			Ingredient loaded = P.p.ingredientLoaders.get(itemLoader.getSaveID()).apply(itemLoader);
+			Ingredient loaded = Brewery.getInstance().ingredientLoaders.get(itemLoader.getSaveID()).apply(itemLoader);
 			int amount = in.readShort();
 			if (loaded != null) {
 				loaded.setAmount(amount);
@@ -513,7 +514,7 @@ public class BIngredients {
 			out.writeByte(Brew.SAVE_VER);
 			save(out);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 			return "";
 		}
 		return byteStream.toString();

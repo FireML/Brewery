@@ -41,14 +41,14 @@ public class MCBarrel {
 		if (inv.getViewers().size() == 1 && inv.getHolder() instanceof org.bukkit.block.Barrel) {
 			Barrel barrel = (Barrel) inv.getHolder();
 			PersistentDataContainer data = barrel.getPersistentDataContainer();
-			NamespacedKey key = new NamespacedKey(P.p, TAG);
+			NamespacedKey key = new NamespacedKey(Brewery.getInstance(), TAG);
 			if (!data.has(key, PersistentDataType.LONG)) return;
 
 			// Get the difference between the time that is stored on the Barrel and the current stored global mcBarrelTime
 			long time = mcBarrelTime - data.getOrDefault(key, PersistentDataType.LONG, mcBarrelTime);
 			data.remove(key);
 			barrel.update();
-			P.p.debugLog("Barrel Time since last open: " + time);
+			Brewery.getInstance().debugLog("Barrel Time since last open: " + time);
 
 			if (time > 0) {
 				brews = 0;
@@ -67,10 +67,10 @@ public class MCBarrel {
 							}
 						}
 					}
-					if (P.debug) {
+					if (Brewery.getInstance().debug) {
 						loadTime = System.nanoTime() - loadTime;
 						float ftime = (float) (loadTime / 1000000.0);
-						P.p.debugLog("opening MC Barrel with potions (" + ftime + "ms)");
+						Brewery.getInstance().debugLog("opening MC Barrel with potions (" + ftime + "ms)");
 					}
 				}
 			}
@@ -88,7 +88,7 @@ public class MCBarrel {
 						if (inv.getHolder() instanceof org.bukkit.block.Barrel) {
 							Barrel barrel = (Barrel) inv.getHolder();
 							PersistentDataContainer data = barrel.getPersistentDataContainer();
-							data.set(new NamespacedKey(P.p, TAG), PersistentDataType.LONG, mcBarrelTime);
+							data.set(new NamespacedKey(Brewery.getInstance(), TAG), PersistentDataType.LONG, mcBarrelTime);
 							barrel.update();
 						}
 						return;
@@ -196,7 +196,7 @@ public class MCBarrel {
 			}
 			if (brews >= maxBrews) {
 				event.setCancelled(true);
-				P.p.msg(event.getWhoClicked(), P.p.languageReader.get("Player_BarrelFull"));
+				Brewery.getInstance().msg(event.getWhoClicked(), Brewery.getInstance().languageReader.get("Player_BarrelFull"));
 			} else {
 				brews++;
 			}

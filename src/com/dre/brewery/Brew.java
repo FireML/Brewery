@@ -20,6 +20,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import uk.firedev.poleislib.Loggers;
 
 import java.io.*;
 import java.security.InvalidKeyException;
@@ -101,7 +102,7 @@ public class Brew implements Cloneable {
 	 */
 	@Nullable
 	public static Brew get(ItemMeta meta) {
-		if (!P.useNBT && !meta.hasLore()) return null;
+		if (!Brewery.getInstance().useNBT && !meta.hasLore()) return null;
 
 		Brew brew = load(meta);
 
@@ -125,7 +126,7 @@ public class Brew implements Cloneable {
 
 		ItemMeta meta = item.getItemMeta();
 		assert meta != null;
-		if (!P.useNBT && !meta.hasLore()) return null;
+		if (!Brewery.getInstance().useNBT && !meta.hasLore()) return null;
 
 		Brew brew = load(meta);
 
@@ -138,9 +139,9 @@ public class Brew implements Cloneable {
 			item.setItemMeta(meta);
 		} else if (brew != null && brew.needsSave) {
 			// Brew needs saving from a previous format
-			if (P.useNBT) {
+			if (Brewery.getInstance().useNBT) {
 				new BrewLore(brew, (PotionMeta) meta).removeLoreData();
-				P.p.debugLog("removed Data from Lore");
+				Brewery.getInstance().debugLog("removed Data from Lore");
 			}
 			brew.save(meta);
 			item.setItemMeta(meta);
@@ -182,7 +183,7 @@ public class Brew implements Cloneable {
 	public static Brew get(int uid) {
 		if (uid < -1) {
 			if (!legacyPotions.containsKey(uid)) {
-				P.p.errorLog("Database failure! unable to find UID " + uid + " of a custom Potion!");
+				Brewery.getInstance().errorLog("Database failure! unable to find UID " + uid + " of a custom Potion!");
 				return null;// throw some exception?
 			}
 		} else {
@@ -251,10 +252,10 @@ public class Brew implements Cloneable {
 					/*if (!immutable) {
 						this.quality = calcQuality();
 					}*/
-					P.p.log("A Brew was made from Recipe: '" + name + "' which could not be found. '" + currentRecipe.getRecipeName() + "' used instead!");
+					Brewery.getInstance().log("A Brew was made from Recipe: '" + name + "' which could not be found. '" + currentRecipe.getRecipeName() + "' used instead!");
 					return true;
 				} else {
-					P.p.errorLog("A Brew was made from Recipe: '" + name + "' which could not be found!");
+					Brewery.getInstance().errorLog("A Brew was made from Recipe: '" + name + "' which could not be found!");
 				}
 			}
 		}
@@ -272,7 +273,7 @@ public class Brew implements Cloneable {
 		int uid = generateUID();
 		clone(uid);
 		PotionMeta meta = (PotionMeta) copy.getItemMeta();
-		if (!P.use1_14) {
+		if (!Brewery.getInstance().use1_14) {
 			// This is due to the Duration Modifier, that is removed in 1.14
 			uid *= 4;
 		}
@@ -408,7 +409,7 @@ public class Brew implements Cloneable {
 	}
 
 	public void updateCustomModelData(ItemMeta meta) {
-		if (!P.use1_14) return;
+		if (!Brewery.getInstance().use1_14) return;
 		if (currentRecipe != null && currentRecipe.getCmData() != null) {
 			int cm;
 			if (quality > 7) {
@@ -494,7 +495,7 @@ public class Brew implements Cloneable {
 		touch();
 
 		BrewModifyEvent modifyEvent = new BrewModifyEvent(this, meta, BrewModifyEvent.Type.SEAL);
-		P.p.getServer().getPluginManager().callEvent(modifyEvent);
+		Brewery.getInstance().getServer().getPluginManager().callEvent(modifyEvent);
 		if (modifyEvent.isCancelled()) {
 			// As the brew and everything connected to it is only saved on the meta from now on,
 			// restoring the origMeta is enough in this case
@@ -583,7 +584,7 @@ public class Brew implements Cloneable {
 		if (!immutable && isStripped()) {
 			throw new IllegalStateException("Cannot make stripped Brews non-static");
 		}
-		if (!P.use1_9 && currentRecipe != null && canDistill()) {
+		if (!Brewery.getInstance().use1_9 && currentRecipe != null && canDistill()) {
 			if (immutable) {
 				currentRecipe.getColor().colorBrew(((PotionMeta) potion.getItemMeta()), potion, false);
 			} else {
@@ -633,13 +634,13 @@ public class Brew implements Cloneable {
 			quality = calcQuality();
 
 			lore.addOrReplaceEffects(getEffects(), quality);
-			potionMeta.setDisplayName(P.p.color("&f" + recipe.getName(quality)));
+			potionMeta.setDisplayName(Brewery.getInstance().color("&f" + recipe.getName(quality)));
 			recipe.getColor().colorBrew(potionMeta, slotItem, canDistill());
 
 		} else {
 			quality = 0;
 			lore.removeEffects();
-			potionMeta.setDisplayName(P.p.color("&f" + P.p.languageReader.get("Brew_DistillUndefined")));
+			potionMeta.setDisplayName(Brewery.getInstance().color("&f" + Brewery.getInstance().languageReader.get("Brew_DistillUndefined")));
 			PotionColor.GREY.colorBrew(potionMeta, slotItem, canDistill());
 		}
 		alc = calcAlcohol();
@@ -657,7 +658,7 @@ public class Brew implements Cloneable {
 		lore.write();
 		touch();
 		BrewModifyEvent modifyEvent = new BrewModifyEvent(this, potionMeta, BrewModifyEvent.Type.DISTILL);
-		P.p.getServer().getPluginManager().callEvent(modifyEvent);
+		Brewery.getInstance().getServer().getPluginManager().callEvent(modifyEvent);
 		if (modifyEvent.isCancelled()) {
 			// As the brew and everything connected to it is only saved on the meta from now on,
 			// not saving the brew into potionMeta is enough to not change anything in case of cancel
@@ -706,14 +707,14 @@ public class Brew implements Cloneable {
 				quality = calcQuality();
 
 				lore.addOrReplaceEffects(getEffects(), quality);
-				potionMeta.setDisplayName(P.p.color("&f" + recipe.getName(quality)));
+				potionMeta.setDisplayName(Brewery.getInstance().color("&f" + recipe.getName(quality)));
 				recipe.getColor().colorBrew(potionMeta, item, canDistill());
 			} else {
 				quality = 0;
 				lore.convertLore(false);
 				lore.removeEffects();
 				currentRecipe = null;
-				potionMeta.setDisplayName(P.p.color("&f" + P.p.languageReader.get("Brew_BadPotion")));
+				potionMeta.setDisplayName(Brewery.getInstance().color("&f" + Brewery.getInstance().languageReader.get("Brew_BadPotion")));
 				PotionColor.GREY.colorBrew(potionMeta, item, canDistill());
 			}
 		}
@@ -739,7 +740,7 @@ public class Brew implements Cloneable {
 		lore.write();
 		touch();
 		BrewModifyEvent modifyEvent = new BrewModifyEvent(this, potionMeta, BrewModifyEvent.Type.AGE);
-		P.p.getServer().getPluginManager().callEvent(modifyEvent);
+		Brewery.getInstance().getServer().getPluginManager().callEvent(modifyEvent);
 		if (modifyEvent.isCancelled()) {
 			// As the brew and everything connected to it is only saved on the meta from now on,
 			// not saving the brew into potionMeta is enough to not change anything in case of cancel
@@ -804,8 +805,8 @@ public class Brew implements Cloneable {
 
 		recipe.getColor().colorBrew(potionMeta, potion, false);
 		updateCustomModelData(potionMeta);
-		potionMeta.setDisplayName(P.p.color("&f" + recipe.getName(quality)));
-		//if (!P.use1_14) {
+		potionMeta.setDisplayName(Brewery.getInstance().color("&f" + recipe.getName(quality)));
+		//if (!Brewery.getInstance().use1_14) {
 		// Before 1.14 the effects duration would strangely be only a quarter of what we tell it to be
 		// This is due to the Duration Modifier, that is removed in 1.14
 		//	uid *= 4;
@@ -820,14 +821,14 @@ public class Brew implements Cloneable {
 		touch();
 		if (event) {
 			BrewModifyEvent modifyEvent = new BrewModifyEvent(this, potionMeta, BrewModifyEvent.Type.CREATE);
-			P.p.getServer().getPluginManager().callEvent(modifyEvent);
+			Brewery.getInstance().getServer().getPluginManager().callEvent(modifyEvent);
 			if (modifyEvent.isCancelled()) {
 				return null;
 			}
 		}
 		save(potionMeta);
 		potion.setItemMeta(potionMeta);
-		P.p.stats.metricsForCreate(true);
+		Brewery.getInstance().stats.metricsForCreate(true);
 		return potion;
 	}
 
@@ -844,9 +845,9 @@ public class Brew implements Cloneable {
 
 		ItemMeta meta = item.getItemMeta();
 		assert meta != null;
-		if (!P.useNBT && !meta.hasLore()) return false;
+		if (!Brewery.getInstance().useNBT && !meta.hasLore()) return false;
 
-		if (P.useNBT) {
+		if (Brewery.getInstance().useNBT) {
 			// Check for Data on PersistentDataContainer
 			if (NBTLoadStream.hasDataInMeta(meta)) {
 				return true;
@@ -862,7 +863,7 @@ public class Brew implements Cloneable {
 
 	private static Brew load(ItemMeta meta) {
 		InputStream itemLoadStream = null;
-		if (P.useNBT) {
+		if (Brewery.getInstance().useNBT) {
 			// Try loading the Item Data from PersistentDataContainer
 			NBTLoadStream nbtStream = new NBTLoadStream(meta);
 			if (nbtStream.hasData()) {
@@ -883,7 +884,7 @@ public class Brew implements Cloneable {
 		try (DataInputStream in = new DataInputStream(unscrambler)) {
 			boolean parityFailed = false;
 			if (in.readByte() != 86) {
-				P.p.errorLog("Parity check failed on Brew while loading, trying to load anyways!");
+				Brewery.getInstance().errorLog("Parity check failed on Brew while loading, trying to load anyways!");
 				parityFailed = true;
 			}
 			Brew brew = new Brew();
@@ -897,34 +898,34 @@ public class Brew implements Cloneable {
 					break;
 				default:
 					if (parityFailed) {
-						P.p.errorLog("Failed to load Brew. Maybe something corrupted the Lore of the Item?");
+						Brewery.getInstance().errorLog("Failed to load Brew. Maybe something corrupted the Lore of the Item?");
 					} else {
-						P.p.errorLog("Brew has data stored in v" + ver + " this Plugin version supports up to v" + SAVE_VER);
+						Brewery.getInstance().errorLog("Brew has data stored in v" + ver + " this Plugin version supports up to v" + SAVE_VER);
 					}
 					return null;
 			}
 
 			XORUnscrambleStream.SuccessType successType = unscrambler.getSuccessType();
 			if (successType == XORUnscrambleStream.SuccessType.PREV_SEED) {
-				P.p.debugLog("Converting Brew from previous Seed");
+				Brewery.getInstance().debugLog("Converting Brew from previous Seed");
 				brew.setNeedsSave(true);
 			} else if ((BConfig.enableEncode && !brew.isStripped()) != (successType == XORUnscrambleStream.SuccessType.MAIN_SEED)) {
 				// We have either enabled encode and the data was not encoded or the other way round
-				P.p.debugLog("Converting Brew to new encode setting");
+				Brewery.getInstance().debugLog("Converting Brew to new encode setting");
 				brew.setNeedsSave(true);
-			} else if (P.useNBT && itemLoadStream instanceof Base91DecoderStream) {
+			} else if (Brewery.getInstance().useNBT && itemLoadStream instanceof Base91DecoderStream) {
 				// We are on a version that supports nbt but the data is still in the lore of the item
 				// Just save it again so that it gets saved to nbt
-				P.p.debugLog("Converting Brew to NBT");
+				Brewery.getInstance().debugLog("Converting Brew to NBT");
 				brew.setNeedsSave(true);
 			}
 			return brew;
 		} catch (IOException e) {
-			P.p.errorLog("IO Error while loading Brew");
-			e.printStackTrace();
+			Brewery.getInstance().errorLog("IO Error while loading Brew");
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		} catch (InvalidKeyException e) {
-			P.p.errorLog("Failed to load Brew, has the data key 'encodeKey' in the config.yml been changed?");
-			e.printStackTrace();
+			Brewery.getInstance().errorLog("Failed to load Brew, has the data key 'encodeKey' in the config.yml been changed?");
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 		return null;
 	}
@@ -961,7 +962,7 @@ public class Brew implements Cloneable {
 	 */
 	public void save(ItemMeta meta) {
 		OutputStream itemSaveStream;
-		if (P.useNBT) {
+		if (Brewery.getInstance().useNBT) {
 			itemSaveStream = new NBTSaveStream(meta);
 		} else {
 			itemSaveStream = new Base91EncoderStream(new LoreSaveStream(meta, 0));
@@ -978,8 +979,8 @@ public class Brew implements Cloneable {
 			}
 			saveToStream(out);
 		} catch (IOException e) {
-			P.p.errorLog("IO Error while saving Brew");
-			e.printStackTrace();
+			Brewery.getInstance().errorLog("IO Error while saving Brew");
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 	}
 
@@ -992,7 +993,7 @@ public class Brew implements Cloneable {
 	public void save(ItemStack item) {
 		ItemMeta meta;
 		if (!item.hasItemMeta()) {
-			meta = P.p.getServer().getItemFactory().getItemMeta(item.getType());
+			meta = Brewery.getInstance().getServer().getItemFactory().getItemMeta(item.getType());
 		} else {
 			meta = item.getItemMeta();
 		}

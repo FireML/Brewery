@@ -1,6 +1,6 @@
 package com.dre.brewery.recipe;
 
-import com.dre.brewery.P;
+import com.dre.brewery.Brewery;
 import com.dre.brewery.utility.BUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -43,7 +43,7 @@ public class BEffect {
 		}
 		type = PotionEffectType.getByName(effect);
 		if (type == null) {
-			P.p.errorLog("Effect: " + effect + " does not exist!");
+			Brewery.getInstance().errorLog("Effect: " + effect + " does not exist!");
 			return;
 		}
 
@@ -75,21 +75,21 @@ public class BEffect {
 
 	private void setLvl(String[] range) {
 		if (range.length == 1) {
-			maxlvl = (short) P.p.parseInt(range[0]);
+			maxlvl = (short) Brewery.getInstance().parseInt(range[0]);
 			minlvl = 1;
 		} else {
-			maxlvl = (short) P.p.parseInt(range[1]);
-			minlvl = (short) P.p.parseInt(range[0]);
+			maxlvl = (short) Brewery.getInstance().parseInt(range[1]);
+			minlvl = (short) Brewery.getInstance().parseInt(range[0]);
 		}
 	}
 
 	private void setDuration(String[] range) {
 		if (range.length == 1) {
-			maxduration = (short) P.p.parseInt(range[0]);
+			maxduration = (short) Brewery.getInstance().parseInt(range[0]);
 			minduration = (short) (maxduration / 8);
 		} else {
-			maxduration = (short) P.p.parseInt(range[1]);
-			minduration = (short) P.p.parseInt(range[0]);
+			maxduration = (short) Brewery.getInstance().parseInt(range[1]);
+			minduration = (short) Brewery.getInstance().parseInt(range[0]);
 		}
 	}
 
@@ -102,7 +102,7 @@ public class BEffect {
 		}
 
 		duration *= 20;
-		if (!P.use1_14) {
+		if (!Brewery.getInstance().use1_14) {
 			@SuppressWarnings("deprecation")
 			double modifier = type.getDurationModifier();
 			duration /= modifier;

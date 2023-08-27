@@ -1,8 +1,9 @@
 package com.dre.brewery.utility;
 
 import com.dre.brewery.BPlayer;
-import com.dre.brewery.P;
+import com.dre.brewery.Brewery;
 import com.dre.brewery.filedata.BConfig;
+import uk.firedev.poleislib.Loggers;
 
 import java.sql.*;
 import java.util.UUID;
@@ -59,10 +60,10 @@ public class SQLSync {
 			if (!saveDataQueue.offer(object, 5, TimeUnit.SECONDS)) {
 				BConfig.sqlSync = null;
 				closeConnection();
-				P.p.errorLog("SQL saving queue overrun, disabling SQL saving");
+				Brewery.getInstance().errorLog("SQL saving queue overrun, disabling SQL saving");
 			}
 		} catch (InterruptedException | SQLException e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 	}
 
@@ -71,7 +72,7 @@ public class SQLSync {
 		try {
 			if (!checkConnection()) {
 				if (!openConnection()) {
-					P.p.errorLog("Opening SQL Connection failed");
+					Brewery.getInstance().errorLog("Opening SQL Connection failed");
 					return;
 				}
 			}
@@ -80,26 +81,26 @@ public class SQLSync {
 			if (statement.execute("SELECT * FROM Brewery_Z_BPlayers WHERE uuid = '" + uuid.toString() + "';")) {
 				final ResultSet result = statement.getResultSet();
 				if (result.next()) {
-					P.p.getServer().getScheduler().runTask(P.p, () -> {
+					Brewery.getInstance().getServer().getScheduler().runTask(Brewery.getInstance(), () -> {
 						try {
 							new BPlayer(uuid.toString(), result.getInt("quality"), result.getInt("drunkeness"), result.getInt("offlineDrunk"));
 						} catch (SQLException e) {
-							e.printStackTrace();
+							Loggers.logException(e, Brewery.getInstance().getLogger());
 						}
 					});
 					return;
 				}
 			}
-			P.p.getServer().getScheduler().runTask(P.p, () -> BPlayer.sqlRemoved(uuid));
+			Brewery.getInstance().getServer().getScheduler().runTask(Brewery.getInstance(), () -> BPlayer.sqlRemoved(uuid));
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 	}
 
 	private void initAsyncTask() {
 		if (sqlTaskRunning) return;
 		sqlTaskRunning = true;
-		P.p.getServer().getScheduler().runTaskAsynchronously(P.p, new SQLSaver());
+		Brewery.getInstance().getServer().getScheduler().runTaskAsynchronously(Brewery.getInstance(), new SQLSaver());
 	}
 
 
@@ -108,7 +109,7 @@ public class SQLSync {
 		this.password = password;
 
 		if (BConfig.sqlHost == null || BConfig.sqlPort == null || user == null || BConfig.sqlDB == null || password == null) {
-			P.p.errorLog("Mysql settings not correctly defined!");
+			Brewery.getInstance().errorLog("Mysql settings not correctly defined!");
 			return false;
 		}
 
@@ -135,14 +136,14 @@ public class SQLSync {
 			connector = str;
 
 		} catch (SQLException | ClassNotFoundException e) {
-			if (P.debug) {
-				e.printStackTrace();
+			if (Brewery.getInstance().debug) {
+				Loggers.logException(e, Brewery.getInstance().getLogger());
 			} else {
-				P.p.errorLog("SQL Exception occured, set 'debug: true' for more info");
-				P.p.errorLog(e.getMessage());
+				Brewery.getInstance().errorLog("SQL Exception occured, set 'debug: true' for more info");
+				Brewery.getInstance().errorLog(e.getMessage());
 				Throwable cause = e.getCause();
 				if (cause != null) {
-					P.p.errorLog(cause.getMessage());
+					Brewery.getInstance().errorLog(cause.getMessage());
 				}
 			}
 			return false;
@@ -158,7 +159,7 @@ public class SQLSync {
 		try {
 			connection = DriverManager.getConnection(connector, user, password);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 			return false;
 		}
 		return true;
@@ -209,7 +210,7 @@ public class SQLSync {
 
 						if (!checkConnection()) {
 							if (!openConnection()) {
-								P.p.errorLog("Opening SQL Connection failed");
+								Brewery.getInstance().errorLog("Opening SQL Connection failed");
 								return;
 							}
 						}
@@ -230,7 +231,7 @@ public class SQLSync {
 									if (storedOfflineDrunk != d.offlineDrunk) {
 										// The player is not offlineDrunk anymore,
 										// Someone else is changing the mysql data
-										P.p.getServer().getScheduler().runTask(P.p, () -> BPlayer.sqlRemoved(d.uuid));
+										Brewery.getInstance().getServer().getScheduler().runTask(Brewery.getInstance(), () -> BPlayer.sqlRemoved(d.uuid));
 										continue;
 									}
 								}
@@ -268,7 +269,7 @@ public class SQLSync {
 					} catch (InterruptedException e) {
 						return;
 					} catch (Exception e) {
-						e.printStackTrace();
+						Loggers.logException(e, Brewery.getInstance().getLogger());
 					}
 				}
 			} finally {

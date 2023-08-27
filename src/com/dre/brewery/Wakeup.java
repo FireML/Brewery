@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class Wakeup {
 
 	public static List<Wakeup> wakeups = new ArrayList<>();
-	public static P p = P.p;
+	public static Brewery p = Brewery.getInstance();
 	public static int checkId = -1;
 	public static Player checkPlayer = null;
 
@@ -268,7 +268,7 @@ public class Wakeup {
 	}
 
 	public static void unloadWorlds() {
-		List<World> worlds = P.p.getServer().getWorlds();
+		List<World> worlds = Brewery.getInstance().getServer().getWorlds();
 		wakeups.removeIf(wakeup -> !worlds.contains(wakeup.loc.getWorld()));
 	}
 

@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.dre.brewery.P;
+import com.dre.brewery.Brewery;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldedit.world.World;
@@ -16,6 +16,7 @@ import com.sk89q.worldguard.internal.permission.RegionPermissionModel;
 import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import uk.firedev.poleislib.Loggers;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,8 +46,8 @@ public class WGBarrel7 implements WGBarrel {
 			try {
 				world = ((World) getWorldByName.invoke(platform, spigot.getWorld().getName()));
 			} catch (IllegalAccessException | InvocationTargetException e) {
-				e.printStackTrace();
-				P.p.msg(player, "Error in WorldGuard");
+				Loggers.logException(e, Brewery.getInstance().getLogger());
+				Brewery.getInstance().msg(player, "Error in WorldGuard");
 				return false;
 			}
 		}

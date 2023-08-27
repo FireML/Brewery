@@ -9,6 +9,7 @@ import org.bstats.charts.DrilldownPie;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
+import uk.firedev.poleislib.Loggers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class Stats {
 
 	public void setupBStats() {
 		try {
-			Metrics metrics = new Metrics(P.p, 3494);
+			Metrics metrics = new Metrics(Brewery.getInstance(), 3494);
 			metrics.addCustomChart(new SingleLineChart("drunk_players", BPlayer::numDrunkPlayers));
 			metrics.addCustomChart(new SingleLineChart("brews_in_existence", () -> brewsCreated));
 			metrics.addCustomChart(new SingleLineChart("barrels_built", Barrel.barrels::size));
@@ -152,10 +153,10 @@ public class Stats {
 				}
 				Map<String, Integer> innerMap = new HashMap<>(3);
 				innerMap.put(mcv, 1);
-				map.put(P.p.getDescription().getVersion(), innerMap);
+				map.put(Brewery.getInstance().getDescription().getVersion(), innerMap);
 				return map;
 			}));
-			metrics.addCustomChart(new SimplePie("language", () -> P.p.language));
+			metrics.addCustomChart(new SimplePie("language", () -> Brewery.getInstance().language));
 			metrics.addCustomChart(new SimplePie("config_scramble", () -> BConfig.enableEncode ? "enabled" : "disabled"));
 			metrics.addCustomChart(new SimplePie("config_lore_color", () -> {
 				if (BConfig.colorInBarrels) {
@@ -188,7 +189,7 @@ public class Stats {
 				}
 			}));
 		} catch (Exception | LinkageError e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 	}
 

@@ -4,7 +4,6 @@ import com.dre.brewery.api.events.barrel.BarrelAccessEvent;
 import com.dre.brewery.api.events.barrel.BarrelCreateEvent;
 import com.dre.brewery.api.events.barrel.BarrelDestroyEvent;
 import com.dre.brewery.api.events.barrel.BarrelRemoveEvent;
-import com.dre.brewery.filedata.BConfig;
 import com.dre.brewery.lore.BrewLore;
 import com.dre.brewery.utility.BUtil;
 import com.dre.brewery.utility.BoundingBox;
@@ -48,9 +47,9 @@ public class Barrel implements InventoryHolder {
 	public Barrel(Block spigot, byte signoffset) {
 		this.spigot = spigot;
 		if (isLarge()) {
-			inventory = P.p.getServer().createInventory(this, 27, P.p.languageReader.get("Etc_Barrel"));
+			inventory = Brewery.getInstance().getServer().createInventory(this, 27, Brewery.getInstance().languageReader.get("Etc_Barrel"));
 		} else {
-			inventory = P.p.getServer().createInventory(this, 9, P.p.languageReader.get("Etc_Barrel"));
+			inventory = Brewery.getInstance().getServer().createInventory(this, 9, Brewery.getInstance().languageReader.get("Etc_Barrel"));
 		}
 		body = new BarrelBody(this, signoffset);
 	}
@@ -70,14 +69,14 @@ public class Barrel implements InventoryHolder {
 	public Barrel(Block spigot, byte sign, BoundingBox bounds, Map<String, Object> items, float time, boolean async) {
 		this.spigot = spigot;
 		if (isLarge()) {
-			this.inventory = P.p.getServer().createInventory(this, 27, P.p.languageReader.get("Etc_Barrel"));
+			this.inventory = Brewery.getInstance().getServer().createInventory(this, 27, Brewery.getInstance().languageReader.get("Etc_Barrel"));
 		} else {
-			this.inventory = P.p.getServer().createInventory(this, 9, P.p.languageReader.get("Etc_Barrel"));
+			this.inventory = Brewery.getInstance().getServer().createInventory(this, 9, Brewery.getInstance().languageReader.get("Etc_Barrel"));
 		}
 		if (items != null) {
 			for (String slot : items.keySet()) {
 				if (items.get(slot) instanceof ItemStack) {
-					this.inventory.setItem(P.p.parseInt(slot), (ItemStack) items.get(slot));
+					this.inventory.setItem(Brewery.getInstance().parseInt(slot), (ItemStack) items.get(slot));
 				}
 			}
 		}
@@ -106,19 +105,19 @@ public class Barrel implements InventoryHolder {
 					randomInTheBack.checked = false;
 				}
 			}
-			new BarrelCheck().runTaskTimer(P.p, 1, 1);
+			new BarrelCheck().runTaskTimer(Brewery.getInstance(), 1, 1);
 		}
 	}
 
 	public boolean hasPermsOpen(Player player, PlayerInteractEvent event) {
 		if (isLarge()) {
 			if (!player.hasPermission("brewery.openbarrel.big")) {
-				P.p.msg(player, P.p.languageReader.get("Error_NoBarrelAccess"));
+				Brewery.getInstance().msg(player, Brewery.getInstance().languageReader.get("Error_NoBarrelAccess"));
 				return false;
 			}
 		} else {
 			if (!player.hasPermission("brewery.openbarrel.small")) {
-				P.p.msg(player, P.p.languageReader.get("Error_NoBarrelAccess"));
+				Brewery.getInstance().msg(player, Brewery.getInstance().languageReader.get("Error_NoBarrelAccess"));
 				return false;
 			}
 		}
@@ -126,7 +125,7 @@ public class Barrel implements InventoryHolder {
 		// Call event
 		BarrelAccessEvent accessEvent = new BarrelAccessEvent(this, player, event.getClickedBlock(), event.getBlockFace());
 		// Listened to by IntegrationListener
-		P.p.getServer().getPluginManager().callEvent(accessEvent);
+		Brewery.getInstance().getServer().getPluginManager().callEvent(accessEvent);
 		return !accessEvent.isCancelled();
 	}
 
@@ -136,7 +135,7 @@ public class Barrel implements InventoryHolder {
 	public boolean hasPermsDestroy(Player player, Block block, BarrelDestroyEvent.Reason reason) {
 		// Listened to by LWCBarrel (IntegrationListener)
 		BarrelDestroyEvent destroyEvent = new BarrelDestroyEvent(this, block, reason, player);
-		P.p.getServer().getPluginManager().callEvent(destroyEvent);
+		Brewery.getInstance().getServer().getPluginManager().callEvent(destroyEvent);
 		return !destroyEvent.isCancelled();
 	}
 
@@ -146,9 +145,9 @@ public class Barrel implements InventoryHolder {
 	public void open(Player player) {
 		if (inventory == null) {
 			if (isLarge()) {
-				inventory = P.p.getServer().createInventory(this, 27, P.p.languageReader.get("Etc_Barrel"));
+				inventory = Brewery.getInstance().getServer().createInventory(this, 27, Brewery.getInstance().languageReader.get("Etc_Barrel"));
 			} else {
-				inventory = P.p.getServer().createInventory(this, 9, P.p.languageReader.get("Etc_Barrel"));
+				inventory = Brewery.getInstance().getServer().createInventory(this, 9, Brewery.getInstance().languageReader.get("Etc_Barrel"));
 			}
 		} else {
 			if (time > 0) {
@@ -168,7 +167,7 @@ public class Barrel implements InventoryHolder {
 						}
 						loadTime = System.nanoTime() - loadTime;
 						float ftime = (float) (loadTime / 1000000.0);
-						P.p.debugLog("opening Barrel with potions (" + ftime + "ms)");
+						Brewery.getInstance().debugLog("opening Barrel with potions (" + ftime + "ms)");
 					}
 				}
 			}
@@ -337,17 +336,17 @@ public class Barrel implements InventoryHolder {
 			if (barrel.body.getBrokenBlock(true) == null) {
 				if (LegacyUtil.isSign(spigot.getType())) {
 					if (!player.hasPermission("brewery.createbarrel.small")) {
-						P.p.msg(player, P.p.languageReader.get("Perms_NoSmallBarrelCreate"));
+						Brewery.getInstance().msg(player, Brewery.getInstance().languageReader.get("Perms_NoSmallBarrelCreate"));
 						return false;
 					}
 				} else {
 					if (!player.hasPermission("brewery.createbarrel.big")) {
-						P.p.msg(player, P.p.languageReader.get("Perms_NoBigBarrelCreate"));
+						Brewery.getInstance().msg(player, Brewery.getInstance().languageReader.get("Perms_NoBigBarrelCreate"));
 						return false;
 					}
 				}
 				BarrelCreateEvent createEvent = new BarrelCreateEvent(barrel, player);
-				P.p.getServer().getPluginManager().callEvent(createEvent);
+				Brewery.getInstance().getServer().getPluginManager().callEvent(createEvent);
 				if (!createEvent.isCancelled()) {
 					barrels.add(0, barrel);
 					return true;
@@ -372,7 +371,7 @@ public class Barrel implements InventoryHolder {
 	public void remove(@Nullable Block broken, @Nullable Player breaker, boolean dropItems) {
 		BarrelRemoveEvent event = new BarrelRemoveEvent(this, dropItems);
 		// Listened to by LWCBarrel (IntegrationListener)
-		P.p.getServer().getPluginManager().callEvent(event);
+		Brewery.getInstance().getServer().getPluginManager().callEvent(event);
 
 		if (inventory != null) {
 			List<HumanEntity> viewers = new ArrayList<>(inventory.getViewers());
@@ -468,7 +467,7 @@ public class Barrel implements InventoryHolder {
 	 * Unload all Barrels that have a Block in a unloaded World
 	 */
 	public static void unloadWorlds() {
-		List<World> worlds = P.p.getServer().getWorlds();
+		List<World> worlds = Brewery.getInstance().getServer().getWorlds();
 		barrels.removeIf(barrel -> !worlds.contains(barrel.spigot.getWorld()));
 	}
 
@@ -542,7 +541,7 @@ public class Barrel implements InventoryHolder {
 					if (!barrel.checked) {
 						Block broken = barrel.body.getBrokenBlock(false);
 						if (broken != null) {
-							P.p.debugLog("Barrel at "
+							Brewery.getInstance().debugLog("Barrel at "
 								+ broken.getWorld().getName() + "/" + broken.getX() + "/" + broken.getY() + "/" + broken.getZ()
 								+ " has been destroyed unexpectedly, contents will drop");
 							// remove the barrel if it was destroyed

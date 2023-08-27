@@ -3,9 +3,9 @@ package com.dre.brewery.filedata;
 
 import java.io.File;
 
+import com.dre.brewery.Brewery;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import com.dre.brewery.P;
+import uk.firedev.poleislib.Loggers;
 
 /**
  * Writes the collected Data to file in Async Thread
@@ -22,18 +22,18 @@ public class WriteData implements Runnable {
 
 	@Override
 	public void run() {
-		File datafile = new File(P.p.getDataFolder(), "data.yml");
-		File worlddatafile = new File(P.p.getDataFolder(), "worlddata.yml");
+		File datafile = new File(Brewery.getInstance().getDataFolder(), "data.yml");
+		File worlddatafile = new File(Brewery.getInstance().getDataFolder(), "worlddata.yml");
 
 		try {
 			data.save(datafile);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 		try {
 			worldData.save(worlddatafile);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Loggers.logException(e, Brewery.getInstance().getLogger());
 		}
 
 		DataSave.lastSave = 1;
