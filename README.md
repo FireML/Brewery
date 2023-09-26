@@ -1,5 +1,5 @@
 ### Brewery is a Minecraft-Plugin for an alternate brewing process, including alcoholic Potions.
-## This is a custom fork, intended for the PoleisMC Minecraft Server
+### This is a custom fork, intended for the PoleisMC Minecraft Server
 
 ![License: GPLv3](https://img.shields.io/badge/license-GPLv3-blue)
 
