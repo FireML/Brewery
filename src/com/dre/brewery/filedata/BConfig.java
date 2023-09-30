@@ -3,7 +3,6 @@ package com.dre.brewery.filedata;
 import com.dre.brewery.*;
 import com.dre.brewery.Brewery;
 import com.dre.brewery.api.events.ConfigLoadEvent;
-import com.dre.brewery.integration.barrel.WGBarrel;
 import com.dre.brewery.integration.barrel.WGBarrel7;
 import com.dre.brewery.integration.item.BreweryPluginItem;
 import com.dre.brewery.recipe.BCauldronRecipe;
@@ -39,7 +38,7 @@ public class BConfig {
 
 	// Third Party Enabled
 	public static boolean useWG; //WorldGuard
-	public static WGBarrel wg;
+	public static WGBarrel7 wg;
 	public static boolean useLWC; //LWC
 	public static boolean useTowny; //Towny
 	public static boolean hasVault; // Vault

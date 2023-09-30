@@ -21,7 +21,7 @@ import uk.firedev.poleislib.Loggers;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class WGBarrel7 implements WGBarrel {
+public class WGBarrel7 {
 
 	private Method getWorldByName;
 
@@ -33,7 +33,6 @@ public class WGBarrel7 implements WGBarrel {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public boolean checkAccess(Player player, Block spigot, Plugin plugin) {
 		WorldGuardPlugin wg = (WorldGuardPlugin) plugin;
 		WorldGuardPlatform platform = WorldGuard.getInstance().getPlatform();

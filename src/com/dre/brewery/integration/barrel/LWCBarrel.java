@@ -26,27 +26,25 @@ public class LWCBarrel {
 	public static boolean denyDestroy(Player player, Barrel barrel) {
 		LWC lwc = LWC.getInstance();
 		Block sign = barrel.getBody().getSignOfSpigot();
-		//if (!Boolean.parseBoolean(lwc.resolveProtectionConfiguration(sign, "ignoreBlockDestruction"))) {
-			Protection protection = lwc.findProtection(sign);
-			if (protection != null) {
-				boolean canAccess = lwc.canAccessProtection(player, protection);
-				boolean canAdmin = lwc.canAdminProtection(player, protection);
+		Protection protection = lwc.findProtection(sign);
+		if (protection != null) {
+			boolean canAccess = lwc.canAccessProtection(player, protection);
+			boolean canAdmin = lwc.canAdminProtection(player, protection);
 
-				try {
-					LWCProtectionDestroyEvent evt = new LWCProtectionDestroyEvent(player, protection, LWCProtectionDestroyEvent.Method.BLOCK_DESTRUCTION, canAccess, canAdmin);
-					lwc.getModuleLoader().dispatchEvent(evt);
+			try {
+				LWCProtectionDestroyEvent evt = new LWCProtectionDestroyEvent(player, protection, LWCProtectionDestroyEvent.Method.BLOCK_DESTRUCTION, canAccess, canAdmin);
+				lwc.getModuleLoader().dispatchEvent(evt);
 
-					if (evt.isCancelled()) {
-						return true;
-					}
-				} catch (Exception e) {
-					lwc.sendLocale(player, "protection.internalerror", "id", "BLOCK_BREAK");
-					Brewery.getInstance().errorLog("Failed to dispatch LWCProtectionDestroyEvent");
-					Loggers.logException(e, Brewery.getInstance().getLogger());
+				if (evt.isCancelled()) {
 					return true;
 				}
+			} catch (Exception e) {
+				lwc.sendLocale(player, "protection.internalerror", "id", "BLOCK_BREAK");
+				Brewery.getInstance().errorLog("Failed to dispatch LWCProtectionDestroyEvent");
+				Loggers.logException(e, Brewery.getInstance().getLogger());
+				return true;
 			}
-		//}
+		}
 
 		return false;
 	}

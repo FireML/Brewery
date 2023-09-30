@@ -205,8 +205,7 @@ public class CustomItem extends RecipeItem implements Ingredient {
 		if (this == item) {
 			return true;
 		}
-		if (item instanceof CustomItem) {
-			CustomItem ci = ((CustomItem) item);
+		if (item instanceof CustomItem ci) {
 			return mat == ci.mat && Objects.equals(name, ci.name) && Objects.equals(lore, ci.lore);
 		}
 		return false;
