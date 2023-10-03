@@ -13,7 +13,7 @@
 <dependency>
     <groupId>com.dre</groupId>
     <artifactId>Brewery</artifactId>
-    <version>[VERSION]</version> <!-- Check the latest version in the pom.xml file -->
+    <version>3.1.2-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>
 ```
