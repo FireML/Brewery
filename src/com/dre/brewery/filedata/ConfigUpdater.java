@@ -6,13 +6,13 @@ import com.dre.brewery.utility.Tuple;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import uk.firedev.poleislib.Loggers;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 
 public class ConfigUpdater {
 
@@ -87,7 +87,7 @@ public class ConfigUpdater {
 			writer.close();
 
 		} catch (IOException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -100,7 +100,7 @@ public class ConfigUpdater {
 			}
 			reader.close();
 		} catch (IOException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -2067,7 +2067,7 @@ public class ConfigUpdater {
 			config.addAll(toLine, patch);
 		} catch (IOException | NullPointerException e) {
 			Brewery.getInstance().errorLog("Could not apply Patch: " + resourcePath);
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 

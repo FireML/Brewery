@@ -150,7 +150,7 @@ public class RecipeTests {
 			}
 
 		} catch (IOException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}*/
 	}
 
@@ -276,9 +276,9 @@ public class RecipeTests {
 			Brewery.getInstance().log("Time without base91: " + (time3 - time2));
 
 		} catch (IOException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		} catch (InvalidKeyException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		} finally {
 			try {
 				data.close();
@@ -286,7 +286,7 @@ public class RecipeTests {
 					dataIn.close();
 				}
 			} catch (IOException e) {
-				Loggers.logException(e, Brewery.getInstance().getLogger());
+				Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			}
 		}*/
 
@@ -400,7 +400,7 @@ public class RecipeTests {
 			test = test;
 
 		} catch (IOException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}*/
 	}
 }

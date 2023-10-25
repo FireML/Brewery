@@ -271,7 +271,7 @@ public class DistortChat {
 					}
 				}
 			} catch (java.util.regex.PatternSyntaxException e) {
-				// Loggers.logException(e, Brewery.getInstance().getLogger());
+				// Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 				return words;
 			}
 		}

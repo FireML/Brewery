@@ -3,18 +3,12 @@ package com.dre.brewery;
 import com.dre.brewery.api.events.brew.BrewModifyEvent;
 import com.dre.brewery.lore.Base91EncoderStream;
 import com.dre.brewery.lore.BrewLore;
-import com.dre.brewery.recipe.BCauldronRecipe;
-import com.dre.brewery.recipe.BRecipe;
-import com.dre.brewery.recipe.Ingredient;
-import com.dre.brewery.recipe.ItemLoader;
-import com.dre.brewery.recipe.RecipeItem;
-import com.dre.brewery.recipe.PotionColor;
+import com.dre.brewery.recipe.*;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.jetbrains.annotations.Nullable;
-import uk.firedev.poleislib.Loggers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -22,6 +16,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Represents ingredients in Cauldron, Brew
@@ -514,7 +509,7 @@ public class BIngredients {
 			out.writeByte(Brew.SAVE_VER);
 			save(out);
 		} catch (IOException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			return "";
 		}
 		return byteStream.toString();

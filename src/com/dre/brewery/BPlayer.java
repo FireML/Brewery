@@ -26,9 +26,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
-import uk.firedev.poleislib.Loggers;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class BPlayer {
 	private static Map<String, BPlayer> players = new HashMap<>();// Players uuid and BPlayer
@@ -223,7 +223,7 @@ public class BPlayer {
 				Brewery.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(Brewery.getInstance(), () -> sendDrunkenessMessage(player), 80);
 			}
 		} catch (Exception e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 

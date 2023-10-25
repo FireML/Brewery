@@ -13,7 +13,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
-import uk.firedev.poleislib.Loggers;
+
+import java.util.logging.Level;
 
 public class WorldListener implements Listener {
 
@@ -37,7 +38,7 @@ public class WorldListener implements Listener {
 				BData.loadWorldData(world.getUID().toString(), world);
 			}
 		} catch (Exception e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		} finally {
 			BData.releaseDataLoadMutex();
 		}

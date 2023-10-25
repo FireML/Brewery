@@ -3,7 +3,6 @@ package com.dre.brewery.lore;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.List;
 
 public class LoreLoadStream extends ByteArrayInputStream {

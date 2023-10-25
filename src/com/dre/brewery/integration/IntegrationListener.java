@@ -19,7 +19,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.Plugin;
-import uk.firedev.poleislib.Loggers;
+
+import java.util.logging.Level;
 
 public class IntegrationListener implements Listener {
 
@@ -38,7 +39,7 @@ public class IntegrationListener implements Listener {
 					Brewery.getInstance().errorLog("Failed to Check WorldGuard for Barrel Open Permissions!");
 					Brewery.getInstance().errorLog("Brewery was tested with version 5.8, 6.1 to 7.0 of WorldGuard!");
 					Brewery.getInstance().errorLog("Disable the WorldGuard support in the config and do /brew reload");
-					Loggers.logException(e, Brewery.getInstance().getLogger());
+					Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 					Player player = event.getPlayer();
 					if (player.hasPermission("brewery.admin") || player.hasPermission("brewery.mod")) {
 						Brewery.getInstance().msg(player, "&cWorldGuard check Error, Brewery was tested with up to v7.0 of Worldguard");
@@ -74,7 +75,7 @@ public class IntegrationListener implements Listener {
 							Brewery.getInstance().errorLog("Failed to Check LWC for Barrel Open Permissions!");
 							Brewery.getInstance().errorLog("Brewery was tested with version 4.5.0 of LWC!");
 							Brewery.getInstance().errorLog("Disable the LWC support in the config and do /brew reload");
-							Loggers.logException(e, Brewery.getInstance().getLogger());
+							Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 							if (player.hasPermission("brewery.admin") || player.hasPermission("brewery.mod")) {
 								Brewery.getInstance().msg(player, "&cLWC check Error, Brewery was tested with up to v4.5.0 of LWC");
 								Brewery.getInstance().msg(player, "&cSet &7useLWC: false &cin the config and /brew reload");
@@ -106,7 +107,7 @@ public class IntegrationListener implements Listener {
 			} catch (Throwable e) {
 				Brewery.getInstance().errorLog("Failed to simulate a Chest for Barrel Open Permissions!");
 				Brewery.getInstance().errorLog("Disable useVirtualChestPerms in the config and do /brew reload");
-				Loggers.logException(e, Brewery.getInstance().getLogger());
+				Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 				if (player.hasPermission("brewery.admin") || player.hasPermission("brewery.mod")) {
 					Brewery.getInstance().msg(player, "&cVirtual Chest Error");
 					Brewery.getInstance().msg(player, "&cSet &7useVirtualChestPerms: false &cin the config and /brew reload");
@@ -142,7 +143,7 @@ public class IntegrationListener implements Listener {
 				Brewery.getInstance().errorLog("Failed to Check LWC for Barrel Break Permissions!");
 				Brewery.getInstance().errorLog("Brewery was tested with version 4.5.0 of LWC!");
 				Brewery.getInstance().errorLog("Disable the LWC support in the config and do /brew reload");
-				Loggers.logException(e, Brewery.getInstance().getLogger());
+				Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 				if (player.hasPermission("brewery.admin") || player.hasPermission("brewery.mod")) {
 					Brewery.getInstance().msg(player, "&cLWC check Error, Brewery was tested with up to v4.5.0 of LWC");
 					Brewery.getInstance().msg(player, "&cSet &7useLWC: false &cin the config and /brew reload");
@@ -166,7 +167,7 @@ public class IntegrationListener implements Listener {
 				Brewery.getInstance().errorLog("Failed to Check LWC on Barrel Destruction!");
 				Brewery.getInstance().errorLog("Brewery was tested with version 4.5.0 of LWC!");
 				Brewery.getInstance().errorLog("Disable the LWC support in the config and do /brew reload");
-				Loggers.logException(e, Brewery.getInstance().getLogger());
+				Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 	}
@@ -180,7 +181,7 @@ public class IntegrationListener implements Listener {
 		} catch (Throwable e) {
 			Brewery.getInstance().errorLog("Failed to Remove LWC Lock from Barrel!");
 			Brewery.getInstance().errorLog("Brewery was tested with version 4.5.0 of LWC!");
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 }

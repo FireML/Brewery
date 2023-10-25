@@ -13,7 +13,6 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import uk.firedev.poleislib.Loggers;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -21,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 
 public class BData {
 
@@ -194,7 +194,7 @@ public class BData {
 			byte ver = in.readByte();
 			return BIngredients.load(in, ver);
 		} catch (IOException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			return new BIngredients();
 		}
 	}
@@ -267,7 +267,7 @@ public class BData {
 				}
 			}
 		} catch (Exception e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		} finally {
 			releaseDataLoadMutex();
 			if (BConfig.loadDataAsync && BData.dataMutex.get() == 0) {
@@ -364,7 +364,7 @@ public class BData {
 							try {
 								box = BoundingBox.fromPoints(locs);
 							} catch (Exception e) {
-								Loggers.logException(e, Brewery.getInstance().getLogger());
+								Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 							}
 						}
 

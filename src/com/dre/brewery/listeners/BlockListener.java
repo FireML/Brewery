@@ -1,7 +1,6 @@
 package com.dre.brewery.listeners;
 
 import com.dre.brewery.*;
-import com.dre.brewery.Brewery;
 import com.dre.brewery.api.events.barrel.BarrelDestroyEvent;
 import com.dre.brewery.filedata.BData;
 import com.dre.brewery.utility.BUtil;

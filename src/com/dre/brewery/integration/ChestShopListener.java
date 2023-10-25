@@ -10,7 +10,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Loggers;
+
+import java.util.logging.Level;
 
 public class ChestShopListener implements Listener {
 
@@ -32,7 +33,7 @@ public class ChestShopListener implements Listener {
 		} catch (Throwable e) {
 			HandlerList.unregisterAll(this);
 			BConfig.hasChestShop = false;
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			Brewery.getInstance().errorLog("Failed to notify Player using ChestShop. Disabling ChestShop support");
 		}
 	}

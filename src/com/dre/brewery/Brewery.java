@@ -24,11 +24,7 @@
 
 package com.dre.brewery;
 
-import com.dre.brewery.filedata.BConfig;
-import com.dre.brewery.filedata.BData;
-import com.dre.brewery.filedata.DataSave;
-import com.dre.brewery.filedata.LanguageReader;
-import com.dre.brewery.filedata.UpdateChecker;
+import com.dre.brewery.filedata.*;
 import com.dre.brewery.integration.ChestShopListener;
 import com.dre.brewery.integration.IntegrationListener;
 import com.dre.brewery.listeners.*;
@@ -44,13 +40,13 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
-import uk.firedev.poleislib.Loggers;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.logging.Level;
 
 public class Brewery extends JavaPlugin {
 	private static Brewery instance;
@@ -114,7 +110,7 @@ public class Brewery extends JavaPlugin {
 			}
 			BConfig.readConfig(cfg);
 		} catch (Exception e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			getLogger().log(Level.SEVERE, e.getMessage(), e);
 			instance = null;
 			getServer().getPluginManager().disablePlugin(this);
 			return;
@@ -170,7 +166,7 @@ public class Brewery extends JavaPlugin {
 			try {
 				instance.getServer().getScheduler().runTaskLaterAsynchronously(instance, new UpdateChecker(), 135);
 			} catch (Exception e) {
-				Loggers.logException(e, Brewery.getInstance().getLogger());
+				getLogger().log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 
@@ -224,7 +220,7 @@ public class Brewery extends JavaPlugin {
 		try {
 			BConfig.readConfig(cfg);
 		} catch (Exception e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			getLogger().log(Level.SEVERE, e.getMessage(), e);
 			instance = null;
 			getServer().getPluginManager().disablePlugin(this);
 			return;

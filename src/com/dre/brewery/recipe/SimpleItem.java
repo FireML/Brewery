@@ -4,7 +4,6 @@ import com.dre.brewery.Brewery;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import uk.firedev.poleislib.Loggers;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -12,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 
 /**
  * Simple Minecraft Item with just Material
@@ -139,7 +139,7 @@ public class SimpleItem extends RecipeItem implements Ingredient {
 				return item;
 			}
 		} catch (IOException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 		return null;
 	}

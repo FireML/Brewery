@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import uk.firedev.poleislib.Loggers;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 /**
  * An Item of a Recipe or as Ingredient in a Brew that corresponds to an item from another plugin.
@@ -157,7 +157,7 @@ public abstract class PluginItem extends RecipeItem implements Ingredient {
 			}
 			return item;
 		} catch (IOException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			return null;
 		}
 	}

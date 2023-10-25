@@ -20,16 +20,12 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
-import uk.firedev.poleislib.Loggers;
 
 import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Represents the liquid in the brewed Potions
@@ -922,10 +918,10 @@ public class Brew implements Cloneable {
 			return brew;
 		} catch (IOException e) {
 			Brewery.getInstance().errorLog("IO Error while loading Brew");
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		} catch (InvalidKeyException e) {
 			Brewery.getInstance().errorLog("Failed to load Brew, has the data key 'encodeKey' in the config.yml been changed?");
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 		return null;
 	}
@@ -980,7 +976,7 @@ public class Brew implements Cloneable {
 			saveToStream(out);
 		} catch (IOException e) {
 			Brewery.getInstance().errorLog("IO Error while saving Brew");
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 

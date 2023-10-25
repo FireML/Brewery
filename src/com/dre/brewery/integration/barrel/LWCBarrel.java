@@ -18,7 +18,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
-import uk.firedev.poleislib.Loggers;
+
+import java.util.logging.Level;
 
 public class LWCBarrel {
 
@@ -41,7 +42,7 @@ public class LWCBarrel {
 			} catch (Exception e) {
 				lwc.sendLocale(player, "protection.internalerror", "id", "BLOCK_BREAK");
 				Brewery.getInstance().errorLog("Failed to dispatch LWCProtectionDestroyEvent");
-				Loggers.logException(e, Brewery.getInstance().getLogger());
+				Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 				return true;
 			}
 		}
@@ -71,7 +72,7 @@ public class LWCBarrel {
 				} catch (EventException e) {
 					lwc.sendLocale(player, "protection.internalerror", "id", "PLAYER_INTERACT");
 					Brewery.getInstance().errorLog("Block Interact could not be passed to LWC");
-					Loggers.logException(e, Brewery.getInstance().getLogger());
+					Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 					return false;
 				}
 			}

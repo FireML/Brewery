@@ -9,10 +9,10 @@ import org.bstats.charts.DrilldownPie;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
-import uk.firedev.poleislib.Loggers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class Stats {
 
@@ -189,7 +189,7 @@ public class Stats {
 				}
 			}));
 		} catch (Exception | LinkageError e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 

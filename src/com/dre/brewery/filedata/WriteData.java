@@ -1,11 +1,11 @@
 package com.dre.brewery.filedata;
 
 
-import java.io.File;
-
 import com.dre.brewery.Brewery;
 import org.bukkit.configuration.file.FileConfiguration;
-import uk.firedev.poleislib.Loggers;
+
+import java.io.File;
+import java.util.logging.Level;
 
 /**
  * Writes the collected Data to file in Async Thread
@@ -28,12 +28,12 @@ public class WriteData implements Runnable {
 		try {
 			data.save(datafile);
 		} catch (Exception e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 		try {
 			worldData.save(worlddatafile);
 		} catch (Exception e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		DataSave.lastSave = 1;

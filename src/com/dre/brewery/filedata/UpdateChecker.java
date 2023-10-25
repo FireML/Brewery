@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.Loggers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Level;
 
 
 /**
@@ -63,7 +63,7 @@ public class UpdateChecker implements Runnable {
 		} catch (MalformedURLException e) {
 			// There was an error creating the URL
 
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			return;
 		}
 
@@ -131,7 +131,7 @@ public class UpdateChecker implements Runnable {
 		} catch (IOException e) {
 			// There was an error reading the query
 			Brewery.getInstance().errorLog("Could not check for Updates. This error can probably be ignored");
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 }

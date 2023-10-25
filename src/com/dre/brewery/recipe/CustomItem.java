@@ -7,7 +7,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import uk.firedev.poleislib.Loggers;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 
 /**
  * Minecraft Item with custon name and lore.
@@ -280,7 +280,7 @@ public class CustomItem extends RecipeItem implements Ingredient {
 			}
 			return item;
 		} catch (IOException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			return null;
 		}
 	}

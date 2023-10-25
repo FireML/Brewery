@@ -8,11 +8,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
-import uk.firedev.poleislib.Loggers;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 
 public class DataSave extends BukkitRunnable {
 
@@ -122,7 +122,7 @@ public class DataSave extends BukkitRunnable {
 						Wakeup.onUnload(world);
 					}
 				} catch (Exception e) {
-					Loggers.logException(e, Brewery.getInstance().getLogger());
+					Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 				}
 				unloadingWorlds.clear();
 			}
@@ -136,7 +136,7 @@ public class DataSave extends BukkitRunnable {
 			}
 			// Mutex will be released in WriteData
 		} catch (Exception e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			BData.dataMutex.set(0);
 		}
 	}

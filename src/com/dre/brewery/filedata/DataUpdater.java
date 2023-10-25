@@ -6,12 +6,12 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import uk.firedev.poleislib.Loggers;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class DataUpdater {
 
@@ -40,7 +40,7 @@ public class DataUpdater {
 		try {
 			data.save(file);
 		} catch (IOException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -75,7 +75,7 @@ public class DataUpdater {
 		} catch (Exception e) {
 			// Getting Material by id may not work in the future
 			Brewery.getInstance().errorLog("Error Converting Ingredient Section of the Data File, newer versions of Bukkit may not support the old Save File anymore:");
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		section = data.getConfigurationSection("BCauldron");
@@ -106,7 +106,7 @@ public class DataUpdater {
 			} catch (Exception e) {
 				// Getting Material by id may not work in the future
 				Brewery.getInstance().errorLog("Error Converting Ingredient Section of Cauldrons, newer versions of Bukkit may not support the old Save File anymore:");
-				Loggers.logException(e, Brewery.getInstance().getLogger());
+				Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 	}
@@ -139,7 +139,7 @@ public class DataUpdater {
 				bkup.renameTo(new File(Brewery.getInstance().getDataFolder(), "worlddataBackup.yml"));
 			}
 		} catch (IOException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 }

@@ -3,13 +3,13 @@ package com.dre.brewery.utility;
 import com.dre.brewery.BPlayer;
 import com.dre.brewery.Brewery;
 import com.dre.brewery.filedata.BConfig;
-import uk.firedev.poleislib.Loggers;
 
 import java.sql.*;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 public class SQLSync {
 	private BlockingQueue<Object> saveDataQueue = new ArrayBlockingQueue<>(64);
@@ -63,7 +63,7 @@ public class SQLSync {
 				Brewery.getInstance().errorLog("SQL saving queue overrun, disabling SQL saving");
 			}
 		} catch (InterruptedException | SQLException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -85,7 +85,7 @@ public class SQLSync {
 						try {
 							new BPlayer(uuid.toString(), result.getInt("quality"), result.getInt("drunkeness"), result.getInt("offlineDrunk"));
 						} catch (SQLException e) {
-							Loggers.logException(e, Brewery.getInstance().getLogger());
+							Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 						}
 					});
 					return;
@@ -93,7 +93,7 @@ public class SQLSync {
 			}
 			Brewery.getInstance().getServer().getScheduler().runTask(Brewery.getInstance(), () -> BPlayer.sqlRemoved(uuid));
 		} catch (Exception e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -137,7 +137,7 @@ public class SQLSync {
 
 		} catch (SQLException | ClassNotFoundException e) {
 			if (Brewery.getInstance().debug) {
-				Loggers.logException(e, Brewery.getInstance().getLogger());
+				Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			} else {
 				Brewery.getInstance().errorLog("SQL Exception occured, set 'debug: true' for more info");
 				Brewery.getInstance().errorLog(e.getMessage());
@@ -159,7 +159,7 @@ public class SQLSync {
 		try {
 			connection = DriverManager.getConnection(connector, user, password);
 		} catch (SQLException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			return false;
 		}
 		return true;
@@ -269,7 +269,7 @@ public class SQLSync {
 					} catch (InterruptedException e) {
 						return;
 					} catch (Exception e) {
-						Loggers.logException(e, Brewery.getInstance().getLogger());
+						Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 					}
 				}
 			} finally {

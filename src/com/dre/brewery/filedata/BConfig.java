@@ -1,7 +1,6 @@
 package com.dre.brewery.filedata;
 
 import com.dre.brewery.*;
-import com.dre.brewery.Brewery;
 import com.dre.brewery.api.events.ConfigLoadEvent;
 import com.dre.brewery.integration.barrel.WGBarrel7;
 import com.dre.brewery.integration.item.BreweryPluginItem;
@@ -19,7 +18,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import uk.firedev.poleislib.Loggers;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class BConfig {
 
@@ -104,7 +103,7 @@ public class BConfig {
 			try {
 				BUtil.saveFile(defconf, p.getDataFolder(), "config.yml", false);
 			} catch (IOException e) {
-				Loggers.logException(e, Brewery.getInstance().getLogger());
+				Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 				return false;
 			}
 		}
@@ -128,7 +127,7 @@ public class BConfig {
 			} catch (IOException e) {
 				if (!(l.equals("zh") || l.equals("tw"))) {
 					// zh and tw not available for some versions
-					Loggers.logException(e, Brewery.getInstance().getLogger());
+					Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 				}
 			}
 		}
@@ -146,7 +145,7 @@ public class BConfig {
 				return cfg;
 			}
 		} catch (Exception e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		// Failed to load

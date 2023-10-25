@@ -16,9 +16,7 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.dre.brewery.BCauldron.EMPTY;
-import static com.dre.brewery.BCauldron.FULL;
-import static com.dre.brewery.BCauldron.SOME;
+import static com.dre.brewery.BCauldron.*;
 
 @SuppressWarnings({"JavaReflectionMemberAccess", "deprecation"})
 public class LegacyUtil {

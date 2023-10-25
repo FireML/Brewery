@@ -4,17 +4,13 @@ import com.dre.brewery.Brewery;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import uk.firedev.poleislib.Loggers;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class LanguageReader {
 	private Map<String, String> entries = new HashMap<>(128);
@@ -65,7 +61,7 @@ public class LanguageReader {
 				Brewery.getInstance().log("Language file updated");
 			}
 		} catch (IOException | InvalidConfigurationException e) {
-			Loggers.logException(e, Brewery.getInstance().getLogger());
+			Brewery.getInstance().getLogger().log(Level.SEVERE, e.getMessage(), e);
 			Brewery.getInstance().errorLog("Language File could not be updated");
 		}
 	}
