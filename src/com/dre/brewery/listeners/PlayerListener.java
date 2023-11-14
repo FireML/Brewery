@@ -2,7 +2,6 @@ package com.dre.brewery.listeners;
 
 import com.dre.brewery.*;
 import com.dre.brewery.filedata.BConfig;
-import com.dre.brewery.filedata.UpdateChecker;
 import com.dre.brewery.utility.BUtil;
 import com.dre.brewery.utility.LegacyUtil;
 import com.dre.brewery.utility.PermissionUtil;
@@ -270,11 +269,6 @@ public class PlayerListener implements Listener {
 				}
 			}
 		}
-	}
-
-	@EventHandler(ignoreCancelled = true)
-	public void onPlayerJoin(PlayerJoinEvent event) {
-		UpdateChecker.notify(event.getPlayer());
 	}
 
 	@EventHandler

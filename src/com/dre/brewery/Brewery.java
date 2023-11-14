@@ -161,15 +161,6 @@ public class Brewery extends JavaPlugin {
 			instance.getServer().getScheduler().runTaskTimer(instance, new CauldronParticles(), 1, 1);
 		}
 
-		// Disable Update Check for older mc versions
-		if (use1_14 && BConfig.updateCheck) {
-			try {
-				instance.getServer().getScheduler().runTaskLaterAsynchronously(instance, new UpdateChecker(), 135);
-			} catch (Exception e) {
-				getLogger().log(Level.SEVERE, e.getMessage(), e);
-			}
-		}
-
 		this.log(this.getDescription().getName() + " enabled!");
 	}
 
